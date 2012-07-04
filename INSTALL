@@ -1,0 +1,28 @@
+Installation
+------------
+
+To compile the DBIngestor library you need the following hard
+dependancies:
+
+- Boost library
+- cmake
+
+Optional:
+
+- unixODBC / ODBC library
+- MySQL Client API
+- Sqlite3
+
+To compile:
+
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/DBIngestor ..
+make all
+sudo make install
+
+Add library and include path to system PATH variables
+
+To compile the documentation:
+
+doxygen DBIngestor.doxygen

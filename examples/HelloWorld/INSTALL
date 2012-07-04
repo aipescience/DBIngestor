@@ -1,0 +1,10 @@
+Installation
+------------
+
+To compile, define DBINGESTOR_LIBRARY_PATH and DBINGESTOR_INCLUDE_PATH to
+represent the installation directory of the DBIngestor library:
+
+mkdir build
+cd build
+cmake -DDBINGESTOR_LIBRARY_PATH:PATH=/usr/local/DBIngestor/lib -DDBINGESTOR_INCLUDE_PATH:PATH=/usr/local/DBIngestor/include ..
+make

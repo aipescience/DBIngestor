@@ -1,0 +1,22 @@
+DBIngestor library
+------------------
+
+This library provides wrappers to data ingestion into various DB systems,
+such as MySQL, SQLite3, and ODBC compatible systems. You can use
+this C++ library to ingest data in any format (you need to implement
+the reading routines though). The library provides an ingestion buffer
+that allows for multiple rows to be ingested at one time. This greatly
+improves ingestion performance. Further assertion and conversion functions
+are provided for elementary data transformation and processing. These can
+easily be extended by custom functions and many examples for implementing
+such functions are provided in the source.
+
+An instructive example on how to write ingestors using the DBIngestor
+library is found in the example directory. Also have a look at the
+AsciiIngest project found at:
+
+https://github.com/adrpar/AsciiIngest
+
+or contact the author for further help and instructions:
+
+apartl@aip.de
