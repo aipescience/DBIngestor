@@ -17,6 +17,7 @@
  *  limitations under the License.
  */
 
+#include <stdlib.h>
 #include "Reader.h"
 #include "dbingestor_error.h"
 #include <assert.h>

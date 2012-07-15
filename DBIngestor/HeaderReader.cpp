@@ -17,6 +17,7 @@
  *  limitations under the License.
  */
 
+#include <stdlib.h>
 #include <iostream>
 #include "HeaderReader.h"
 #include "dbingestor_error.h"
