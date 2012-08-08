@@ -17,12 +17,12 @@
  *  limitations under the License.
  */
 
-#include <stdlib.h>
 #include <iostream>
 #include "HeaderReader.h"
 #include "dbingestor_error.h"
 #include <assert.h>
 #include "DType.h"
+#include <stdio.h>
 
 #include <boost/xpressive/xpressive.hpp>
 #include <boost/algorithm/string.hpp>

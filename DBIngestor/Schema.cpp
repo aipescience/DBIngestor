@@ -17,8 +17,8 @@
  *  limitations under the License.
  */
 
-#include <stdlib.h>
 #include "Schema.h"
+#include <stdio.h>
 #include <assert.h>
 #include <iostream>
 #include <algorithm>

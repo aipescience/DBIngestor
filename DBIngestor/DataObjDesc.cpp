@@ -21,6 +21,7 @@
 #include "dbingestor_error.h"
 #include <assert.h>
 #include <stdlib.h>
+#include <cstring>
 
 using namespace DBDataSchema;
 using namespace std;
@@ -69,10 +70,16 @@ bool DataObjDesc::getIsConstItem() {
     return isConstData;
 }
 
-void DataObjDesc::setIsConstItem(bool newIsConstItem) {
+void DataObjDesc::setIsConstItem(bool newIsConstItem,  bool newIsStorage) {
     assert(newIsConstItem == 0 || newIsConstItem == 1);
+    assert(newIsStorage == 0 || newIsStorage == 1);
     
     isConstData = newIsConstItem;
+    isStoreageConstData = newIsStorage;
+}
+
+bool DataObjDesc::getIsStorageItem() {
+    return isStoreageConstData;
 }
 
 DBAsserter::Asserter * DataObjDesc::getAssertion(unsigned long index) {
@@ -117,6 +124,13 @@ void DataObjDesc::setConstData(void * newConstData) {
     
     constData = newConstData;
 }
+
+void DataObjDesc::updateConstData(void * newConstData) {
+    assert(constData != NULL);
+    
+    memcpy(constData, newConstData, DBDataSchema::getByteLenOfDType(getDataObjDType()));
+}
+
 
 DType DataObjDesc::getDataObjDType() {
     return dataObjDType;

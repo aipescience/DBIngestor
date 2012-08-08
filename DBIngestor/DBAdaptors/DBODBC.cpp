@@ -905,9 +905,9 @@ int DBODBC::finalizePreparedStatement(void* preparedStatement) {
 int DBODBC::maxRowsPerStmt(DBDataSchema::Schema * thisSchema) {
     float numRows;
     
-    //2100 magic number for MS SQL Server
+    //2100 magic number for MS SQL Server //apparently it is smaller...
     if(dbServerName.find("Microsoft") != dbServerName.npos) {
-        numRows = 2100.0 / thisSchema->getArrSchemaItems().size();
+        numRows = 1024.0 / thisSchema->getArrSchemaItems().size();
     }
     
     return (int)numRows;
@@ -1021,11 +1021,11 @@ DBDataSchema::DBType DBODBC::getType(SQLSMALLINT thisTypeID) {
         case SQL_BIGINT:
             return DBDataSchema::DBT_BIGINT; 
         case SQL_FLOAT:
-            return DBDataSchema::DBT_FLOAT; 
+            return DBDataSchema::DBT_REAL;
         case SQL_DOUBLE:
             return DBDataSchema::DBT_REAL; 
         case SQL_REAL:
-            return DBDataSchema::DBT_REAL; 
+            return DBDataSchema::DBT_FLOAT;
             
         default:
             printf("Error ODBC:\n");

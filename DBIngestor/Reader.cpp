@@ -17,10 +17,10 @@
  *  limitations under the License.
  */
 
-#include <stdlib.h>
 #include "Reader.h"
 #include "dbingestor_error.h"
 #include <assert.h>
+#include <stdio.h>
 
 using namespace DBReader;
 using namespace std;

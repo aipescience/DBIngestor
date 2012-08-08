@@ -17,11 +17,11 @@
  *  limitations under the License.
  */
 
-#include <stdlib.h>
 #include "DBIngestor.h"
 #include "DBIngestBuffer.h"
 #include "dbingestor_error.h"
 #include <assert.h>
+#include <stdio.h>
 #include <string>
 #include <boost/date_time/posix_time/posix_time.hpp>
 

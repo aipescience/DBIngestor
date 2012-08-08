@@ -78,6 +78,15 @@ namespace DBDataSchema {
          */
         bool isConstData;
 
+        /*! \var bool isStoreageConstData
+         is true if constant data is assumed for this field. the constant data is
+         different to the isConstData behaviour as such, that this constant also works
+         as a store in memory. i.e. after the value for this data object has been 
+         calculated, its result will be written back to the data object for further use.
+         the constData needs to be allocated and setup properly if you use this
+         */
+        bool isStoreageConstData;
+
         /*! \var void * constData
          if the value is constant (e.g. header data), this saves the data
          which does not need to be read all the time
@@ -113,12 +122,16 @@ namespace DBDataSchema {
 
 		bool getIsConstItem();
         
-		void setIsConstItem(bool newIsConstItem);
+		void setIsConstItem(bool newIsConstItem, bool newIsStorage);
+
+		bool getIsStorageItem();
 
 		void * getConstData();
         
 		void setConstData(void * newConstData);
-        
+
+        void updateConstData(void * newConstData);
+
         DBAsserter::Asserter * getAssertion(unsigned long index);
 	
 		void addAssertion(DBAsserter::Asserter * newAssertion);
