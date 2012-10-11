@@ -657,7 +657,7 @@ int convToInt1(std::string & thisString, void* result) {
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
     if(tmp == 0) {
-        if(thisString.find_first_not_of("0123456789.xXeE+-") != string::npos) {
+        if(thisString.find_first_not_of("0123456789.xXeE+- ") != string::npos) {
             return 1; 
         }
     }
@@ -674,7 +674,7 @@ int convToInt2(std::string & thisString, void* result) {
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
     if(tmp == 0) {
-        if(thisString.find_first_not_of("0123456789.xXeE+-") != string::npos) {
+        if(thisString.find_first_not_of("0123456789.xXeE+- ") != string::npos) {
             return 1; 
         }
     }
@@ -690,7 +690,7 @@ int convToInt4(std::string & thisString, void* result) {
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
     if(*(int32_t*)result == 0) {
-        if(thisString.find_first_not_of("0123456789.xXeE+-") != string::npos) {
+        if(thisString.find_first_not_of("0123456789.xXeE+- ") != string::npos) {
             return 1; 
         }
     }
@@ -708,7 +708,7 @@ int convToInt8(std::string & thisString, void* result) {
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
     if(*(int64_t*)result == 0) {
-        if(thisString.find_first_not_of("0123456789.xXeE+-") != string::npos) {
+        if(thisString.find_first_not_of("0123456789.xXeE+- ") != string::npos) {
             return 1; 
         }
     }
@@ -723,7 +723,7 @@ int convToUInt1(std::string & thisString, void* result) {
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
     if(tmp == 0) {
-        if(thisString.find_first_not_of("0123456789.xXeE+-") != string::npos) {
+        if(thisString.find_first_not_of("0123456789.xXeE+- ") != string::npos) {
             return 1; 
         }
     }
@@ -740,7 +740,7 @@ int convToUInt2(std::string & thisString, void* result) {
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
     if(tmp == 0) {
-        if(thisString.find_first_not_of("0123456789.xXeE+-") != string::npos) {
+        if(thisString.find_first_not_of("0123456789.xXeE+- ") != string::npos) {
             return 1; 
         }
     }
@@ -756,7 +756,7 @@ int convToUInt4(std::string & thisString, void* result) {
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
     if(*(uint32_t*)result == 0) {
-        if(thisString.find_first_not_of("0123456789.xXeE+-") != string::npos) {
+        if(thisString.find_first_not_of("0123456789.xXeE+- ") != string::npos) {
             return 1; 
         }
     }
@@ -774,7 +774,7 @@ int convToUInt8(std::string & thisString, void* result) {
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
     if(*(uint64_t*)result == 0) {
-        if(thisString.find_first_not_of("0123456789.xXeE+-") != string::npos) {
+        if(thisString.find_first_not_of("0123456789.xXeE+- ") != string::npos) {
             return 1; 
         }
     }
@@ -793,7 +793,7 @@ int convToReal4(std::string & thisString, void* result) {
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
     if(*(float*)result == 0.0 || isnan(*(float*)result) || isinf(*(float*)result)) {
-        if(thisString.find_first_not_of("0123456789.xXeE+-") != string::npos) {
+        if(thisString.find_first_not_of("0123456789.xXeE+- ") != string::npos) {
             return 1; 
         }
     }
@@ -807,7 +807,7 @@ int convToReal8(std::string & thisString, void* result) {
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
     if(*(double*)result == 0.0 || isnan(*(double*)result) || isinf(*(double*)result)) {
-        if(thisString.find_first_not_of("0123456789.xXeE+-") != string::npos) {
+        if(thisString.find_first_not_of("0123456789.xXeE+- ") != string::npos) {
             return 1; 
         }
     }
