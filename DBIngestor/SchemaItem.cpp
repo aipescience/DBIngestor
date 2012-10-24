@@ -26,6 +26,7 @@ using namespace std;
 
 SchemaItem::SchemaItem() {
     columnName = EMPTY_SCHEMAITEM_NAME;
+    isNotNull = false;
     dataDesc = NULL;
 }
 
@@ -58,6 +59,14 @@ void SchemaItem::setColumnDBType(DBType newColumnDBType) {
 	assert(newColumnDBType > 0 && newColumnDBType <= DBT_MAXTYPE);
     
     columnDBType = newColumnDBType;
+}
+
+bool SchemaItem::getIsNotNull() {
+    return isNotNull;
+}
+
+void SchemaItem::setIsNotNull(bool newIsNotNull) {
+    isNotNull = newIsNotNull;
 }
 
 int32_t SchemaItem::getColumnSize() {

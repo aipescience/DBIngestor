@@ -310,6 +310,7 @@ DBDataSchema::Schema * DBODBC::getSchema(string database, string table) {
         SQLSMALLINT typeResult;
         SQLINTEGER columnSize;
         SQLSMALLINT decimalDigits;
+        SQLSMALLINT notNull;
 
         DBDataSchema::SchemaItem * newItem = new DBDataSchema::SchemaItem;
         
@@ -345,6 +346,14 @@ DBDataSchema::Schema * DBODBC::getSchema(string database, string table) {
             DBIngestor_error("DBODBC - getSchema: could not read data type");
         }            
 
+        result = SQLGetData(stmt2, 11, SQL_SMALLINT, &notNull, sizeof(notNull), &ind);
+        
+        if(!SQL_SUCCEEDED(result)) {
+            printf("Error ODBC:\n");
+            printODBCError("SQLGetData", stmt2, SQL_HANDLE_STMT);
+            DBIngestor_error("DBODBC - getSchema: could not read data type");
+        }
+
         string colName(buffer);
         
         newItem->setColumnName(colName);
@@ -354,6 +363,12 @@ DBDataSchema::Schema * DBODBC::getSchema(string database, string table) {
         
         newItem->setColumnSize(columnSize);
         newItem->setDecimalDigits(decimalDigits);
+        
+        if(notNull == SQL_NO_NULLS) {
+            newItem->setIsNotNull(1);
+        } else {
+            newItem->setIsNotNull(0);
+        }
         
         retSchema->addItemToSchema(newItem);            
     }

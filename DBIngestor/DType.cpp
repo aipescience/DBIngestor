@@ -657,7 +657,7 @@ int convToInt1(std::string & thisString, void* result) {
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
     if(tmp == 0) {
-        if(thisString.find_first_not_of("0123456789.xXeE+- ") != string::npos) {
+        if(thisString.find_first_not_of("0123456789.xXeEnaNAifIF+- ") != string::npos) {
             return 1; 
         }
     }
@@ -674,7 +674,7 @@ int convToInt2(std::string & thisString, void* result) {
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
     if(tmp == 0) {
-        if(thisString.find_first_not_of("0123456789.xXeE+- ") != string::npos) {
+        if(thisString.find_first_not_of("0123456789.xXeEnaNAifIF+- ") != string::npos) {
             return 1; 
         }
     }

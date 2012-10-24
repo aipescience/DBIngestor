@@ -122,6 +122,7 @@ int DBIngestor::validateSchema() {
                     //copy additional information from schema over
                     currLocalItem->setColumnSize(currSrvItem->getColumnSize());
                     currLocalItem->setDecimalDigits(currSrvItem->getDecimalDigits());
+                    currLocalItem->setIsNotNull(currSrvItem->getIsNotNull());
                     
                     break;
                 }
@@ -209,6 +210,12 @@ int DBIngestor::ingestData(int lenBuffer) {
             isNull = myReader->getItemInRow(myDBSchema->getArrSchemaItems().at(i)->getDataDesc(), 1, 1, &result);
             
             err = ingestBuff->addToRow(result, isNull, myDBSchema->getArrSchemaItems().at(i));
+            
+            if(err != 1) {
+                printf("Error in reading line %i\n", counter);
+                printf("Problem with schema item number: %i\n", i);
+                DBIngestor_error("DBIngestor: Ingesting NULL in column that is set IS NOT NULL!\n");
+            }
             
             //if this was a string, free it on the reader side... it was already copied somewhere else...
             if(myDBSchema->getArrSchemaItems().at(i)->getDataDesc()->getDataObjDType() == DBDataSchema::DT_STRING) {

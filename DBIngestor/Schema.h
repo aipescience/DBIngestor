@@ -74,7 +74,7 @@ namespace DBDataSchema {
         std::string getTableName();
         
         void setTableName(std::string newTableName);
-	
+        
         int32_t getNumActiveItems();
 
         std::vector<SchemaItem*> & getArrSchemaItems();

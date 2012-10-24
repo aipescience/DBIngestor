@@ -159,6 +159,7 @@ DBDataSchema::Schema * DBSqlite3::getSchema(string database, string table) {
             
             newItem->setColumnName((char*)sqlite3_column_text(statement, 1));
             newItem->setColumnDBType(DBDataSchema::DBT_ANY);
+            newItem->setIsNotNull(false);
             //newItem->setDataDesc(NULL);
             
             retSchema->addItemToSchema(newItem);            

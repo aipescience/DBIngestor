@@ -59,6 +59,11 @@ namespace DBDataSchema {
          */
 		DBType columnDBType;
         
+        /*! \var bool isNotNull
+         is not null flag
+         */
+        bool isNotNull;
+        
         /*! \var int32_t columnSize
          column size of the data (SEE ODBC column sizes)
          */
@@ -90,6 +95,10 @@ namespace DBDataSchema {
 		DBType getColumnDBType();
 	
 		void setColumnDBType(DBType newColumnDBType);
+        
+        bool getIsNotNull();
+        
+        void setIsNotNull(bool newIsNotNull);
         
         int32_t getColumnSize();
         

@@ -135,6 +135,10 @@ int DBIngestBuffer::addToRow(void* value, bool isNull, DBDataSchema::SchemaItem 
         castDTypeToDBType(value, currObj->getDataObjDType(), thisSchemaItem->getColumnDBType(), (currRow+currRowItemByte));
         isNullArray[currSize-1][currRowItemId] = 0;
     } else {
+        //check if this row can be null
+        if(thisSchemaItem->getIsNotNull() == true)
+            return 0;
+        
         isNullArray[currSize-1][currRowItemId] = 1;
     }
         
