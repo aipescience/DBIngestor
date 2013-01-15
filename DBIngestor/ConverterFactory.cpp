@@ -39,6 +39,8 @@
 #include "Converters/convert_isLt.h"
 #include "Converters/convert_isNe.h"
 #include "Converters/convert_ifthenelse.h"
+#include "Converters/convert_concat.h"
+#include "Converters/convert_3concat.h"
 
 using namespace DBConverter;
 using namespace std;
@@ -57,6 +59,8 @@ ConverterFactory::ConverterFactory() {
     registerConvert<convert_islt>();
     registerConvert<convert_isne>();
     registerConvert<convert_ifthenelse>();
+    registerConvert<convert_concat>();
+    registerConvert<convert_3concat>();
 }
 
 ConverterFactory::~ConverterFactory() {

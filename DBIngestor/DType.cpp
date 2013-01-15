@@ -33,6 +33,8 @@
 #include "stdint_win.h"
 #endif
 
+#define STRING_BUFF_SIZE 1024
+
 using namespace DBDataSchema;
 using namespace std;
 
@@ -162,8 +164,9 @@ int DBDataSchema::castStringToDType(std::string & thisString, DType thisType, vo
         case DT_STRING: {
             //since we are only working with pointers to strings internaly, allocate memory, copy string and hope this
             //gets freed in the IngestBuffer....
-            char * tmpStr = (char*)malloc(thisString.size() * sizeof(char));
-            strcpy(tmpStr, thisString.c_str());
+            char * tmpStr = (char*)malloc((thisString.size() + 1) * sizeof(char));
+            strncpy(tmpStr, thisString.c_str(), thisString.size());
+            tmpStr[thisString.size()] = '\0';
             *(char**)result = tmpStr;}
             break;
         case DT_INT1:
@@ -250,7 +253,7 @@ void DBDataSchema::printThisDType(void* var, DType thisType) {
 int DBDataSchema::getByteLenOfDType(DType thisType) {
     switch (thisType) {
         case DT_STRING:
-            return sizeof(char);
+            return sizeof(char*);
         case DT_INT1:
             return sizeof(int8_t);
         case DT_INT2:
@@ -648,6 +651,58 @@ double DBDataSchema::castToDouble(DType thisType, void* value) {
         default:
             return 0;
     }
+}
+
+char * DBDataSchema::castToString(DType thisType, void* value) {
+    char * buffer;
+    buffer = (char*) malloc(STRING_BUFF_SIZE * sizeof(char));
+    if(buffer == NULL) {
+        DBIngestor_error("castToString: No memory left to cast into.");
+    }
+
+    switch (thisType) {
+        case DT_INT1: 
+            sprintf(buffer, "%hhi", *(int8_t*) value);
+            break;
+        case DT_INT2: 
+            sprintf(buffer, "%hi", *(int16_t*) value);
+            break;
+        case DT_INT4: 
+            sprintf(buffer, "%i", *(int32_t*) value);
+            break;
+        case DT_INT8: 
+            sprintf(buffer, "%li", *(int64_t*) value);
+            break;
+        case DT_UINT1: 
+            sprintf(buffer, "%hhu", *(uint8_t*) value);
+            break;
+        case DT_UINT2: 
+            sprintf(buffer, "%hu", *(uint16_t*) value);
+            break;
+        case DT_UINT4: 
+            sprintf(buffer, "%u", *(uint32_t*) value);
+            break;
+        case DT_UINT8: 
+            sprintf(buffer, "%lu", *(uint64_t*) value);
+            break;
+        case DT_REAL4: 
+            sprintf(buffer, "%f", *(float*) value);
+            break;
+        case DT_REAL8: 
+            sprintf(buffer, "%lf", *(double*) value);
+            break;
+        case DT_STRING:
+            buffer = (char*) realloc(buffer, (strlen(*(char**) value) + 1) * sizeof(char));
+            if(buffer == NULL)
+                DBIngestor_error("castToString: No memory left to cast into.");
+            strncpy(buffer, *(char**)value, strlen(*(char**) value));
+            buffer[strlen(*(char**) value)] = '\0';
+            break;
+        default:
+            return 0;
+    }
+
+    return buffer;
 }
 
 int convToInt1(std::string & thisString, void* result) {

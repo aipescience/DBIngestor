@@ -219,7 +219,8 @@ int DBIngestor::ingestData(int lenBuffer) {
             
             //if this was a string, free it on the reader side... it was already copied somewhere else...
             if(myDBSchema->getArrSchemaItems().at(i)->getDataDesc()->getDataObjDType() == DBDataSchema::DT_STRING) {
-                free(*(char**)result);
+                if(myDBSchema->getArrSchemaItems().at(i)->getDataDesc()->getIsConstItem() != true)
+                    free(*(char**)result);
             }
         }
         

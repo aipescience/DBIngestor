@@ -86,6 +86,8 @@ namespace DBDataSchema {
 
     double castToDouble(DType thisType, void* value);
 
+    char * castToString(DType thisType, void* value);
+
 }
 
 #endif
