@@ -18,6 +18,8 @@
  */
 
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "HelloWorld_Reader.h"
 
@@ -44,7 +46,7 @@ namespace HelloWorld {
     bool HelloWorldReader::getItemInRow(DBDataSchema::DataObjDesc * thisItem, bool applyAsserters, bool applyConverters, void* result) {
         //reroute constant items:
         if(thisItem->getIsConstItem() == true) {
-            getConstItem(thisItem, result);
+            getConstItem(thisItem, 1, 1, result);
         } else if (thisItem->getIsHeaderItem() == true) {
             printf("We never told you to read headers...\n");
             exit(EXIT_FAILURE);
@@ -76,7 +78,7 @@ namespace HelloWorld {
         }
     }
 
-    void HelloWorldReader::getConstItem(DBDataSchema::DataObjDesc * thisItem, void* result) {
+    void HelloWorldReader::getConstItem(DBDataSchema::DataObjDesc * thisItem, bool applyAsserters, bool applyConverters, void* result) {
         memcpy(result, thisItem->getConstData(), DBDataSchema::getByteLenOfDType(thisItem->getDataObjDType()));
     }
 }

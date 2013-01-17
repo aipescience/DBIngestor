@@ -45,7 +45,7 @@ namespace HelloWorld {
 
         void getDataItem(DBDataSchema::DataObjDesc * thisItem, void* result);
 
-        void getConstItem(DBDataSchema::DataObjDesc * thisItem, void* result);
+        void getConstItem(DBDataSchema::DataObjDesc * thisItem, bool applyAsserters, bool applyConverters, void* result);
     };
     
 }

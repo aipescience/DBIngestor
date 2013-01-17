@@ -89,11 +89,7 @@ bool Reader::applyConversions(DBDataSchema::DataObjDesc * thisItem, void* result
         if(currConverter->getNumParameters() > 0) {
             for(int j=0; j<currConverter->getNumParameters(); j++) {
                 //we donot need to apply asserters here... they have already been checked
-                if(currConverter->getParameterDatObj(j)->getIsConstItem() == true) {
-                    getConstItem(currConverter->getParameterDatObj(j), currConverter->getParameter(j));
-                } else {
-                    getItemInRow(currConverter->getParameterDatObj(j), 0, 1, currConverter->getParameter(j));
-                }
+                getItemInRow(currConverter->getParameterDatObj(j), 0, 1, currConverter->getParameter(j));
                 currConverter->setParameter(j, currConverter->getParameter(j));
             }
         }
