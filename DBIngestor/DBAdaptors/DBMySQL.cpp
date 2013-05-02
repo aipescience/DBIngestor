@@ -115,7 +115,7 @@ int DBMySQL::rollback() {
 }
 
 int DBMySQL::releaseSavepoint() {
-    if(mysql_query(dbHandler, "RELEASE SAVEPOINT dbIngst_sqlite_sp")) {
+    if(mysql_query(dbHandler, "RELEASE SAVEPOINT dbIngst_mysql_sp")) {
         printf("Error MySQL:\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
         printf("DBMySQL: savepoint not realeased successfully.\n");
