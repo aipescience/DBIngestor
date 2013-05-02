@@ -4,6 +4,11 @@ set(DIDIR "${PROJECT_SOURCE_DIR}/DBIngestor")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/Modules/")
 
+############################################################################
+## SET THIS TO THE MYSQL BASE PATH IF IT IS NOT AT A STANDARD PLACE
+############################################################################
+set(MYSQL_BASE_PATH "/usr/local/mysql")
+
 set(CMAKE_BUILD_TYPE Release)
 set(SQLITE3_BUILD_IFFOUND 1)
 set(MYSQL_BUILD_IFFOUND 1)
@@ -33,14 +38,13 @@ file(GLOB HEADERS "${DIDIR}/*.h")
 
 #MESSAGE(STATUS "Dir: " ${DIDIR})
 
-
-
 SET(Boost_USE_MULTITHREAD ON)
 find_package (Boost COMPONENTS program_options REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 
 find_package (SQLITE3)
+message("Found SQLITE3: ${SQLITE3_FOUND}")
 if(SQLITE3_FOUND AND SQLITE3_BUILD_IFFOUND)
 	include_directories(${SQLITE3_INCLUDE_DIR})
 	add_definitions(-DDB_SQLITE3)
@@ -48,6 +52,7 @@ if(SQLITE3_FOUND AND SQLITE3_BUILD_IFFOUND)
 endif()
 
 find_package (Mysql)
+message("Found MySQL: ${MYSQL_FOUND}")
 if(MYSQL_FOUND AND MYSQL_BUILD_IFFOUND)
 	include_directories(${MYSQL_INCLUDE_DIR})
 	add_definitions(-DDB_MYSQL)
@@ -55,6 +60,7 @@ if(MYSQL_FOUND AND MYSQL_BUILD_IFFOUND)
 endif()
 
 find_package (ODBC)
+message("Found ODBC: ${ODBC_FOUND}")
 if(ODBC_FOUND AND ODBC_BUILD_IFFOUND)
 	include_directories(${ODBC_INCLUDE_DIRS})
 	add_definitions(-DDB_ODBC)
