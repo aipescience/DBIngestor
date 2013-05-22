@@ -34,7 +34,7 @@ using namespace HelloWorld;
 int main (int argc, const char * argv[])
 {
     DBServer::DBAbstractor * dbServer;
-    DBIngest::DBIngestor * asciiIngestor;
+    DBIngest::DBIngestor * helloWorldingestor;
     DBServer::DBAdaptorsFactory adaptorFac;
 
     DBAsserter::AsserterFactory * assertFac = new DBAsserter::AsserterFactory;
@@ -50,22 +50,22 @@ int main (int argc, const char * argv[])
 
     dbServer = adaptorFac.getDBAdaptors("mysql");
     //dbServer = adaptorFac.getDBAdaptors("unix_sqlsrv_odbc");
-    asciiIngestor = new DBIngest::DBIngestor(thisSchema, thisReader, dbServer);
-    asciiIngestor->setUsrName("root");
-    asciiIngestor->setPasswd("");
+    helloWorldingestor = new DBIngest::DBIngestor(thisSchema, thisReader, dbServer);
+    helloWorldingestor->setUsrName("root");
+    helloWorldingestor->setPasswd("");
 
     //settings for MS SQL Server through FreeTDS ODBC
-    //asciiIngestor->setSocket("DRIVER=FreeTDS;TDS_Version=7.0;");
-    //asciiIngestor->setPort("1433");
+    //helloWorldingestor->setSocket("DRIVER=FreeTDS;TDS_Version=7.0;");
+    //helloWorldingestor->setPort("1433");
     
     //settings for mysql - if this should work with other DBs, addapt here
-    asciiIngestor->setSocket("");
-    asciiIngestor->setPort("3306");
-    asciiIngestor->setHost("localhost");
+    helloWorldingestor->setSocket("");
+    helloWorldingestor->setPort("3306");
+    helloWorldingestor->setHost("localhost");
    
     //now ingest data after setup
-    asciiIngestor->setPerformanceMeter(2);
-    asciiIngestor->ingestData(5);    
+    helloWorldingestor->setPerformanceMeter(2);
+    helloWorldingestor->ingestData(5);    
     
     delete thisSchemaMapper;
     delete thisSchema;
