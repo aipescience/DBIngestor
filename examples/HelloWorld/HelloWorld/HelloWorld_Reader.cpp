@@ -46,7 +46,7 @@ namespace HelloWorld {
     bool HelloWorldReader::getItemInRow(DBDataSchema::DataObjDesc * thisItem, bool applyAsserters, bool applyConverters, void* result) {
         //reroute constant items:
         if(thisItem->getIsConstItem() == true) {
-            getConstItem(thisItem, 1, 1, result);
+            getConstItem(thisItem, result);
         } else if (thisItem->getIsHeaderItem() == true) {
             printf("We never told you to read headers...\n");
             exit(EXIT_FAILURE);
@@ -78,7 +78,7 @@ namespace HelloWorld {
         }
     }
 
-    void HelloWorldReader::getConstItem(DBDataSchema::DataObjDesc * thisItem, bool applyAsserters, bool applyConverters, void* result) {
+    void HelloWorldReader::getConstItem(DBDataSchema::DataObjDesc * thisItem, void* result) {
         memcpy(result, thisItem->getConstData(), DBDataSchema::getByteLenOfDType(thisItem->getDataObjDType()));
     }
 }

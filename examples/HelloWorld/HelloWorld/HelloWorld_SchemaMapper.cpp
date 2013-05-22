@@ -24,6 +24,7 @@
 #include <DataObjDesc.h>
 #include <DType.h>
 #include <DBType.h>
+#include <stdlib.h>
 
 using namespace std;
 using namespace DBDataSchema;
@@ -57,7 +58,7 @@ namespace HelloWorld {
         DataObjDesc * col1Obj = new DataObjDesc();
         col1Obj->setDataObjName("Col1");
         col1Obj->setDataObjDType(DT_STRING);
-        col1Obj->setIsConstItem(false);
+        col1Obj->setIsConstItem(false, false);
         col1Obj->setIsHeaderItem(false);
         
         //then describe the SchemaItem which represents the data on the server side
@@ -74,7 +75,7 @@ namespace HelloWorld {
         DataObjDesc * col2Obj = new DataObjDesc();
         col2Obj->setDataObjName("Col2");
         col2Obj->setDataObjDType(DT_UINT8);
-        col2Obj->setIsConstItem(true);
+        col2Obj->setIsConstItem(true, false);
         col2Obj->setIsHeaderItem(false);
         
         //assign constant value to this column. needs allocation first
@@ -93,7 +94,7 @@ namespace HelloWorld {
         constConvObj->setOffsetId(0);                         //this is the first parameter in the function - any additional parameter would have higher id
         constConvObj->setDataObjName("CONST_CONV_ITEM");      //some random name...
         constConvObj->setIsHeaderItem(0);                     
-        constConvObj->setIsConstItem(1);                      //this is a constant...
+        constConvObj->setIsConstItem(1, 0);                      //this is a constant...
         constConvObj->setDataObjDType(DT_REAL8);              //using a float here...
         
         //same as above when registering constants....
