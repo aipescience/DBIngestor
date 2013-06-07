@@ -23,6 +23,7 @@ using namespace DBServer;
 
 DBAbstractor::DBAbstractor() {
     isConnected = false;
+    resumeMode = false;
 }
 
 DBAbstractor::~DBAbstractor() {
@@ -32,6 +33,15 @@ DBAbstractor::~DBAbstractor() {
 bool DBAbstractor::getIsConnected() {
     return isConnected;
 }
+
+bool DBAbstractor::getResumeMode() {
+	return resumeMode;
+}
+
+void DBAbstractor::setResumeMode(bool newResumeMode) {
+	resumeMode = newResumeMode;
+}
+
 
 void * DBAbstractor::initGetCompleteTable(DBDataSchema::Schema * thisSchema) {
     throw "Not yet implemented";

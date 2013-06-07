@@ -136,43 +136,47 @@ int DBODBCBulk::setSavepoint() {
     SQLHSTMT stmt;
     SQLRETURN result;
     
-    SQLAllocHandle(SQL_HANDLE_STMT, odbcDbc, &stmt);
-    
-    /*if(dbServerName.find("Microsoft") != dbServerName.npos) {
-     SQLCHAR query[29] = "BEGIN TRAN @dbIngest_ODBC_sp";
-     result = SQLExecDirect(stmt, query, 29);
-     }*/
-    
-    result = SQLSetConnectAttr(odbcDbc, SQL_ATTR_AUTOCOMMIT, (SQLUINTEGER*)SQL_AUTOCOMMIT_OFF, sizeof(SQLUINTEGER));
-    
-    if(!SQL_SUCCEEDED(result)) {
-        printf("Error ODBC:\n");
-        printODBCError("SQLSetConnectAttr", odbcDbc, SQL_HANDLE_DBC);
-        DBIngestor_error("DBODBCBulk: could not set savepoint.\n");
+    if(resumeMode == false) {
+        SQLAllocHandle(SQL_HANDLE_STMT, odbcDbc, &stmt);
+        
+        /*if(dbServerName.find("Microsoft") != dbServerName.npos) {
+         SQLCHAR query[29] = "BEGIN TRAN @dbIngest_ODBC_sp";
+         result = SQLExecDirect(stmt, query, 29);
+         }*/
+        
+        result = SQLSetConnectAttr(odbcDbc, SQL_ATTR_AUTOCOMMIT, (SQLUINTEGER*)SQL_AUTOCOMMIT_OFF, sizeof(SQLUINTEGER));
+        
+        if(!SQL_SUCCEEDED(result)) {
+            printf("Error ODBC:\n");
+            printODBCError("SQLSetConnectAttr", odbcDbc, SQL_HANDLE_DBC);
+            DBIngestor_error("DBODBCBulk: could not set savepoint.\n");
+        }
+        
+        SQLFreeHandle(SQL_HANDLE_STMT, stmt);
     }
-    
-    SQLFreeHandle(SQL_HANDLE_STMT, stmt);
-    
+
     return 1;
 }
 
 int DBODBCBulk::rollback() {
     SQLRETURN result;
     
-    result = SQLEndTran(SQL_HANDLE_DBC, odbcDbc, SQL_ROLLBACK);
-    
-    if(!SQL_SUCCEEDED(result)) {
-        printf("Error ODBC:\n");
-        printODBCError("SQLEndTran", odbcDbc, SQL_HANDLE_DBC);
-        DBIngestor_error("DBODBCBulk: rollback not successfull.\n");
-    }
-    
-    result = SQLSetConnectAttr(odbcDbc, SQL_ATTR_AUTOCOMMIT, (SQLUINTEGER*)SQL_AUTOCOMMIT_ON, sizeof(SQLUINTEGER));
-    
-    if(!SQL_SUCCEEDED(result)) {
-        printf("Error ODBC:\n");
-        printODBCError("SQLSetConnectAttr", odbcDbc, SQL_HANDLE_DBC);
-        DBIngestor_error("DBODBCBulk: could not reset to autocommit mode.\n");
+    if(resumeMode == false) {
+        result = SQLEndTran(SQL_HANDLE_DBC, odbcDbc, SQL_ROLLBACK);
+        
+        if(!SQL_SUCCEEDED(result)) {
+            printf("Error ODBC:\n");
+            printODBCError("SQLEndTran", odbcDbc, SQL_HANDLE_DBC);
+            DBIngestor_error("DBODBCBulk: rollback not successfull.\n");
+        }
+        
+        result = SQLSetConnectAttr(odbcDbc, SQL_ATTR_AUTOCOMMIT, (SQLUINTEGER*)SQL_AUTOCOMMIT_ON, sizeof(SQLUINTEGER));
+        
+        if(!SQL_SUCCEEDED(result)) {
+            printf("Error ODBC:\n");
+            printODBCError("SQLSetConnectAttr", odbcDbc, SQL_HANDLE_DBC);
+            DBIngestor_error("DBODBCBulk: could not reset to autocommit mode.\n");
+        }
     }
     
     return 1;
@@ -181,20 +185,22 @@ int DBODBCBulk::rollback() {
 int DBODBCBulk::releaseSavepoint() {
     SQLRETURN result;
     
-    result = SQLEndTran(SQL_HANDLE_DBC, odbcDbc, SQL_COMMIT);
-    
-    if(!SQL_SUCCEEDED(result)) {
-        printf("Error ODBC:\n");
-        printODBCError("SQLEndTran", odbcDbc, SQL_HANDLE_DBC);
-        DBIngestor_error("DBODBCBulk: savepoint not realeased successfully.\n");
-    }
-    
-    result = SQLSetConnectAttr(odbcDbc, SQL_ATTR_AUTOCOMMIT, (SQLUINTEGER*)SQL_AUTOCOMMIT_ON, sizeof(SQLUINTEGER));
-    
-    if(!SQL_SUCCEEDED(result)) {
-        printf("Error ODBC:\n");
-        printODBCError("SQLSetConnectAttr", odbcDbc, SQL_HANDLE_DBC);
-        DBIngestor_error("DBODBCBulk: could not reset to autocommit mode.\n");
+    if(resumeMode == false) {
+        result = SQLEndTran(SQL_HANDLE_DBC, odbcDbc, SQL_COMMIT);
+        
+        if(!SQL_SUCCEEDED(result)) {
+            printf("Error ODBC:\n");
+            printODBCError("SQLEndTran", odbcDbc, SQL_HANDLE_DBC);
+            DBIngestor_error("DBODBCBulk: savepoint not realeased successfully.\n");
+        }
+        
+        result = SQLSetConnectAttr(odbcDbc, SQL_ATTR_AUTOCOMMIT, (SQLUINTEGER*)SQL_AUTOCOMMIT_ON, sizeof(SQLUINTEGER));
+        
+        if(!SQL_SUCCEEDED(result)) {
+            printf("Error ODBC:\n");
+            printODBCError("SQLSetConnectAttr", odbcDbc, SQL_HANDLE_DBC);
+            DBIngestor_error("DBODBCBulk: could not reset to autocommit mode.\n");
+        }
     }
     
     return 1;

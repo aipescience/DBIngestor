@@ -20,3 +20,10 @@ https://github.com/adrpar/AsciiIngest
 or contact the author for further help and instructions:
 
 apartl@aip.de
+
+Implementation Limitations:
+---------------------------
+
+Currently resume ingest is only supported for MySQL and ODBC (but not BulkODBC)
+DB abastractors... If you need support for BulkODBC or Sqlite3, just drop me a
+line

@@ -45,6 +45,7 @@ namespace DBServer {
     
     protected:
         bool isConnected;
+        bool resumeMode;
 
 	public:
         DBAbstractor();
@@ -231,6 +232,10 @@ namespace DBServer {
         virtual int getNextRow(DBDataSchema::Schema * thisSchema, void* thisData, void * preparedStatement);
 
         bool getIsConnected();
+
+        bool getResumeMode();
+
+        void setResumeMode(bool newResumeMode);
     };
 }
 

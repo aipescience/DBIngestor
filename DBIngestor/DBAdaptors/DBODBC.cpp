@@ -55,6 +55,8 @@ typedef struct {
 DBODBC::DBODBC() {
     odbcEnv = SQL_NULL_HENV;
     odbcDbc = SQL_NULL_HDBC;
+    myNumElements = -1;
+    recCount = 0;
 }
 
 DBODBC::~DBODBC() {
@@ -66,6 +68,12 @@ int DBODBC::connect(string usr, string pwd, string host, string port, string soc
     SQLCHAR output[1024];
     SQLSMALLINT outputLen;
     
+    myusr = usr;
+    mypwd = pwd;
+    myhost = host;
+    myport = port;
+    mysocket = socket;
+
     //Allocate an environment handle
     SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &odbcEnv);
     SQLSetEnvAttr(odbcEnv, SQL_ATTR_ODBC_VERSION, (void *) SQL_OV_ODBC3, 0);
@@ -94,7 +102,9 @@ int DBODBC::connect(string usr, string pwd, string host, string port, string soc
         printf("Error ODBC:\n");
         printf("%s\n", output);
         printODBCError("SQLDriverConnect", odbcDbc, SQL_HANDLE_DBC);
-        DBIngestor_error("DBODBC: could not connect to ODBC database\n");
+        printf("DBODBC: could not connect to ODBC database\n");
+
+        return 0;
     }
     
     //read the database system
@@ -127,38 +137,42 @@ int DBODBC::setSavepoint() {
     SQLHSTMT stmt;
     SQLRETURN result;
     
-    SQLAllocHandle(SQL_HANDLE_STMT, odbcDbc, &stmt);
-    
-    result = SQLSetConnectAttr(odbcDbc, SQL_ATTR_AUTOCOMMIT, (SQLUINTEGER*)SQL_AUTOCOMMIT_OFF, sizeof(SQLUINTEGER));
-    
-    if(!SQL_SUCCEEDED(result)) {
-        printf("Error ODBC:\n");
-        printODBCError("SQLSetConnectAttr", odbcDbc, SQL_HANDLE_DBC);
-        DBIngestor_error("DBODBC: could not set savepoint.\n");
+    if(resumeMode == false) {
+        SQLAllocHandle(SQL_HANDLE_STMT, odbcDbc, &stmt);
+        
+        result = SQLSetConnectAttr(odbcDbc, SQL_ATTR_AUTOCOMMIT, (SQLUINTEGER*)SQL_AUTOCOMMIT_OFF, sizeof(SQLUINTEGER));
+        
+        if(!SQL_SUCCEEDED(result)) {
+            printf("Error ODBC:\n");
+            printODBCError("SQLSetConnectAttr", odbcDbc, SQL_HANDLE_DBC);
+            DBIngestor_error("DBODBC: could not set savepoint.\n");
+        }
+        
+        SQLFreeHandle(SQL_HANDLE_STMT, stmt);
     }
-    
-    SQLFreeHandle(SQL_HANDLE_STMT, stmt);
-    
+
     return 1;
 }
 
 int DBODBC::rollback() {
     SQLRETURN result;
     
-    result = SQLEndTran(SQL_HANDLE_DBC, odbcDbc, SQL_ROLLBACK);
-    
-    if(!SQL_SUCCEEDED(result)) {
-        printf("Error ODBC:\n");
-        printODBCError("SQLEndTran", odbcDbc, SQL_HANDLE_DBC);
-        DBIngestor_error("DBODBC: rollback not successfull.\n");
-    }
-    
-    result = SQLSetConnectAttr(odbcDbc, SQL_ATTR_AUTOCOMMIT, (SQLUINTEGER*)SQL_AUTOCOMMIT_ON, sizeof(SQLUINTEGER));
+    if(resumeMode == false) {
+        result = SQLEndTran(SQL_HANDLE_DBC, odbcDbc, SQL_ROLLBACK);
+        
+        if(!SQL_SUCCEEDED(result)) {
+            printf("Error ODBC:\n");
+            printODBCError("SQLEndTran", odbcDbc, SQL_HANDLE_DBC);
+            DBIngestor_error("DBODBC: rollback not successfull.\n");
+        }
+        
+        result = SQLSetConnectAttr(odbcDbc, SQL_ATTR_AUTOCOMMIT, (SQLUINTEGER*)SQL_AUTOCOMMIT_ON, sizeof(SQLUINTEGER));
 
-    if(!SQL_SUCCEEDED(result)) {
-        printf("Error ODBC:\n");
-        printODBCError("SQLSetConnectAttr", odbcDbc, SQL_HANDLE_DBC);
-        DBIngestor_error("DBODBC: could not reset to autocommit mode.\n");
+        if(!SQL_SUCCEEDED(result)) {
+            printf("Error ODBC:\n");
+            printODBCError("SQLSetConnectAttr", odbcDbc, SQL_HANDLE_DBC);
+            DBIngestor_error("DBODBC: could not reset to autocommit mode.\n");
+        }
     }
 
     return 1;
@@ -166,21 +180,23 @@ int DBODBC::rollback() {
 
 int DBODBC::releaseSavepoint() {
     SQLRETURN result;
-    
-    result = SQLEndTran(SQL_HANDLE_DBC, odbcDbc, SQL_COMMIT);
-    
-    if(!SQL_SUCCEEDED(result)) {
-        printf("Error ODBC:\n");
-        printODBCError("SQLEndTran", odbcDbc, SQL_HANDLE_DBC);
-        DBIngestor_error("DBODBC: savepoint not realeased successfully.\n");
-    }
-    
-    result = SQLSetConnectAttr(odbcDbc, SQL_ATTR_AUTOCOMMIT, (SQLUINTEGER*)SQL_AUTOCOMMIT_ON, sizeof(SQLUINTEGER));
-    
-    if(!SQL_SUCCEEDED(result)) {
-        printf("Error ODBC:\n");
-        printODBCError("SQLSetConnectAttr", odbcDbc, SQL_HANDLE_DBC);
-        DBIngestor_error("DBODBC: could not reset to autocommit mode.\n");
+
+    if(resumeMode == false) {
+        result = SQLEndTran(SQL_HANDLE_DBC, odbcDbc, SQL_COMMIT);
+        
+        if(!SQL_SUCCEEDED(result)) {
+            printf("Error ODBC:\n");
+            printODBCError("SQLEndTran", odbcDbc, SQL_HANDLE_DBC);
+            DBIngestor_error("DBODBC: savepoint not realeased successfully.\n");
+        }
+        
+        result = SQLSetConnectAttr(odbcDbc, SQL_ATTR_AUTOCOMMIT, (SQLUINTEGER*)SQL_AUTOCOMMIT_ON, sizeof(SQLUINTEGER));
+        
+        if(!SQL_SUCCEEDED(result)) {
+            printf("Error ODBC:\n");
+            printODBCError("SQLSetConnectAttr", odbcDbc, SQL_HANDLE_DBC);
+            DBIngestor_error("DBODBC: could not reset to autocommit mode.\n");
+        }
     }
 
     return 1;
@@ -381,7 +397,10 @@ DBDataSchema::Schema * DBODBC::getSchema(string database, string table) {
 
 void* DBODBC::prepareIngestStatement(DBDataSchema::Schema * thisSchema) {
     SQLHSTMT * stmt = (SQLHSTMT*)malloc(sizeof(SQLHSTMT));
-    
+
+    myNumElements = -1;
+    mySchema = thisSchema;
+
     if(stmt == NULL) {
         printf("DBODBC: Error\n");
         DBIngestor_error("DBODBC - prepareMultiIngestStatement: error allocating ODBC statement.\n");
@@ -449,11 +468,16 @@ void* DBODBC::prepareIngestStatement(DBDataSchema::Schema * thisSchema) {
         printODBCError("SQLPrepare", *stmt, SQL_HANDLE_STMT);
         DBIngestor_error("DBODBC - prepareIngestStatement: could not prepare statement");
     }            
+
+    myquery = query;
         
     return (void*)stmtContainer;   
 }
 
 void* DBODBC::prepareMultiIngestStatement(DBDataSchema::Schema * thisSchema, int numElements) {
+    myNumElements = numElements;
+    mySchema = thisSchema;
+
     if(numElements > maxRowsPerStmt(thisSchema)) {
         printf("DBODBC: Error\n");
         printf("max_prepared_stmt_count: %i\n", maxRowsPerStmt(thisSchema));
@@ -540,6 +564,8 @@ void* DBODBC::prepareMultiIngestStatement(DBDataSchema::Schema * thisSchema, int
         DBIngestor_error("DBODBC - prepareMultiIngestStatement: could not prepare statement");
     }            
     
+    myquery = query;
+
     return (void*)stmtContainer;    
 }
 
@@ -723,7 +749,11 @@ int DBODBC::bindStatement(void* preparedStatement) {
         if(!SQL_SUCCEEDED(result)) {
             printf("DBODBC: Error\n");
             printODBCError("SQLExecute", *statement, SQL_HANDLE_STMT);
-            DBIngestor_error("DBODBC - executeStmt: could not bind statement.\n");
+
+            printf("Bind: %llx\n", statement);
+
+            if(recCount == 1)
+                DBIngestor_error("DBODBC - executeStmt: could not bind statement.\n");
         }
     }
     
@@ -784,7 +814,9 @@ int DBODBC::bindColStatement(void* preparedStatement) {
         if(!SQL_SUCCEEDED(result)) {
             printf("DBODBC: Error\n");
             printODBCError("SQLExecute", *statement, SQL_HANDLE_STMT);
-            DBIngestor_error("DBODBC - executeStmt: could not bind statement.\n");
+
+            if(recCount == 1)
+                DBIngestor_error("DBODBC - executeStmt: could not bind statement.\n");
         }
     }
     
@@ -886,6 +918,8 @@ int DBODBC::bindOneRowToStmt(DBDataSchema::Schema * thisSchema, void* thisData, 
 }
 
 int DBODBC::executeStmt(void* preparedStatement) {
+    recCount++;
+    
     assert(preparedStatement != NULL);
     SQLRETURN result;
     ODBC_prepStmt *prepStmt = (ODBC_prepStmt*) preparedStatement;
@@ -898,9 +932,62 @@ int DBODBC::executeStmt(void* preparedStatement) {
     if(!SQL_SUCCEEDED(result)) {
         printf("DBODBC: Error\n");
         printODBCError("SQLExecute", *statement, SQL_HANDLE_STMT);
-        DBIngestor_error("DBODBC - executeStmt: could not execute statement.\n");
+
+        //get error information
+        SQLINTEGER i=0;
+        SQLINTEGER native;
+        SQLCHAR state[7];
+        SQLCHAR text[SQL_MAX_MESSAGE_LENGTH];
+        SQLSMALLINT len;
+        SQLRETURN result;
+    
+        //extract information from ODBC
+        result = SQLGetDiagRec(SQL_HANDLE_STMT, *statement, ++i, state, &native, text, sizeof(text), &len);
+
+        if(!SQL_SUCCEEDED(result)) {
+            DBIngestor_error("DBODBC - executeStmt: could not execute statement.\n");
+        }
+
+        if(resumeMode == true && native == 20017 && recCount < 1500) {
+
+            SQLFreeStmt(*statement, SQL_RESET_PARAMS);
+            SQLFreeHandle(SQL_HANDLE_STMT, *statement);
+
+            disconnect();
+
+            int count = 0;
+            while(connect(myusr, mypwd, myhost, myport, mysocket) == 0 && count < 300) {
+                count++;
+                disonnect();
+                sleep(10);
+                printf("\nTrying to reconnect...\n\n");
+            }
+
+            printf("Reconnect successfull!\n");
+
+            statement = (SQLHSTMT*)malloc(sizeof(SQLHSTMT));
+            SQLAllocHandle(SQL_HANDLE_STMT, odbcDbc, statement);
+            result = SQLPrepare(*statement, (SQLCHAR*)myquery.c_str(), SQL_NTS);
+
+            prepStmt->statement = statement;
+
+            if(!SQL_SUCCEEDED(result)) {
+                printf("Error ODBC:\n");
+                printf("Statement: %s\n", myquery.c_str());
+                printODBCError("SQLPrepare", *statement, SQL_HANDLE_STMT);
+                DBIngestor_error("DBODBC - prepareIngestStatement: could not prepare statement");
+            }
+
+            executeStmt((void*)prepStmt);
+
+            recCount--;
+            return -2;
+        } else {
+            DBIngestor_error("DBODBC - executeStmt: could not execute statement.\n");
+        }
     }
     
+    recCount--;
     return 1;
 }
 

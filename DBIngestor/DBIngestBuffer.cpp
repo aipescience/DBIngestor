@@ -260,13 +260,18 @@ int DBIngestBuffer::commit() {
             myDBAbstractor->bindOneRowToStmt(myDBSchema, (void*)bufferArray[i*lenPreparedStmt + j], isNullArray[i*lenPreparedStmt + j], preparedStmt, j);
         }
         
-        myDBAbstractor->executeStmt(preparedStmt);
+        if(myDBAbstractor->executeStmt(preparedStmt) == -2) {
+            initPreparedStmt(min(bufferSize, myDBAbstractor->maxRowsPerStmt(myDBSchema)));
+
+            //resetting preparedStmtRemain through lenPreparedStmtRemain
+            lenPreparedStmtRemain = 0;
+        }
     }
     
     if(remainder > 0) {
         if(remainder != lenPreparedStmtRemain) {
             //finish this prepared statement off before creating a new one
-            if(preparedStmtRemain != NULL)
+            if(lenPreparedStmtRemain != 0 && preparedStmtRemain != NULL)
                 myDBAbstractor->finalizePreparedStatement(preparedStmtRemain);
             
             preparedStmtRemain = myDBAbstractor->prepareMultiIngestStatement(myDBSchema, remainder);
@@ -278,7 +283,9 @@ int DBIngestBuffer::commit() {
             myDBAbstractor->bindOneRowToStmt(myDBSchema, (void**)bufferArray[numLoops*lenPreparedStmt + i], isNullArray[numLoops*lenPreparedStmt + i], preparedStmtRemain, i);
         }
         
-        myDBAbstractor->executeStmt(preparedStmtRemain);
+        if(myDBAbstractor->executeStmt(preparedStmtRemain) == -2) {
+            initPreparedStmt(min(bufferSize, myDBAbstractor->maxRowsPerStmt(myDBSchema)));
+        }
     }
     
     return 1;

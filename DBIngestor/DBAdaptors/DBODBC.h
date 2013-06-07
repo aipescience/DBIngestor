@@ -62,6 +62,16 @@ namespace DBServer {
          string returned by ODBC with the server system name
          */
         string dbServerName;
+
+        std::string myusr;
+        std::string mypwd; 
+        std::string myhost;
+        std::string myport;
+        std::string mysocket;
+        std::string myquery;
+        DBDataSchema::Schema * mySchema;
+        int myNumElements;
+        int recCount;        
         
         /*! \brief translates type on the server into DBType. 
          

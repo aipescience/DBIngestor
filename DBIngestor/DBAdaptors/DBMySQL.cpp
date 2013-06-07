@@ -51,6 +51,8 @@ typedef struct {
 
 DBMySQL::DBMySQL() {
     dbHandler = NULL;
+	myNumElements = -1;
+	recCount = 0;
 }
 
 DBMySQL::~DBMySQL() {
@@ -63,6 +65,12 @@ int DBMySQL::connect(string usr, string pwd, string host, string port, string so
     const char * socketStr = NULL;
     
     dbHandler = mysql_init(NULL);
+
+	myusr = usr;
+	mypwd = pwd;
+	myhost = host;
+	myport = port;
+	mysocket = socket;
     
     if(dbHandler == NULL) {
         printf("Error MySQL:\n");
@@ -73,6 +81,9 @@ int DBMySQL::connect(string usr, string pwd, string host, string port, string so
     if(socket.length() != 0) 
         socketStr = socket.c_str();
     
+	my_bool reconnect = true;
+	mysql_options(dbHandler, MYSQL_OPT_RECONNECT, &reconnect);
+
     if(mysql_real_connect(dbHandler, host.c_str(), usr.c_str(), pwd.c_str(), NULL, atoi(port.c_str()), socketStr, 0) == NULL) {
         printf("Error MySQL:\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
@@ -95,7 +106,7 @@ int DBMySQL::disconnect() {
 }
 
 int DBMySQL::setSavepoint() {
-    if(mysql_query(dbHandler, "SAVEPOINT dbIngst_mysql_sp")) {
+    if(resumeMode == false && mysql_query(dbHandler, "SAVEPOINT dbIngst_mysql_sp")) {
         printf("Error MySQL:\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
         DBIngestor_error("DBMySQL: could not set savepoint.\n");
@@ -105,7 +116,7 @@ int DBMySQL::setSavepoint() {
 }
 
 int DBMySQL::rollback() {
-    if(mysql_query(dbHandler, "ROLLBACK TO SAVEPOINT dbIngst_mysql_sp")) {
+    if(resumeMode == false && mysql_query(dbHandler, "ROLLBACK TO SAVEPOINT dbIngst_mysql_sp")) {
         printf("Error MySQL:\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
         DBIngestor_error("DBMySQL: rollback not successfull.\n");
@@ -115,7 +126,7 @@ int DBMySQL::rollback() {
 }
 
 int DBMySQL::releaseSavepoint() {
-    if(mysql_query(dbHandler, "RELEASE SAVEPOINT dbIngst_mysql_sp")) {
+    if(resumeMode == false && mysql_query(dbHandler, "RELEASE SAVEPOINT dbIngst_mysql_sp")) {
         printf("Error MySQL:\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
         printf("DBMySQL: savepoint not realeased successfully.\n");
@@ -209,6 +220,10 @@ DBDataSchema::Schema * DBMySQL::getSchema(string database, string table) {
 
 void* DBMySQL::prepareIngestStatement(DBDataSchema::Schema * thisSchema) {
     MYSQL_prepStmt * stmtContainer;
+
+	myNumElements = -1;
+	mySchema = thisSchema;
+
     stmtContainer = (MYSQL_prepStmt*)malloc(sizeof(MYSQL_prepStmt));
     if (stmtContainer == NULL) {
         DBIngestor_error("DBMySQL - prepareIngestStatement: could not allocate statement container.");
@@ -289,6 +304,7 @@ void* DBMySQL::prepareIngestStatement(DBDataSchema::Schema * thisSchema) {
         DBIngestor_error("DBMySQL - prepareIngestStatement: an error occured in prepareIngestStatement\n");
     }
     
+	myquery = query;
     stmtContainer->stmt = statement;
     stmtContainer->bind = bind;
     stmtContainer->lenBind = (int)thisSchema->getNumActiveItems();
@@ -297,7 +313,10 @@ void* DBMySQL::prepareIngestStatement(DBDataSchema::Schema * thisSchema) {
 }
 
 void* DBMySQL::prepareMultiIngestStatement(DBDataSchema::Schema * thisSchema, int numElements) {
-    if(numElements > maxRowsPerStmt(thisSchema)) {
+	myNumElements = numElements;
+	mySchema = thisSchema;
+	
+	if(numElements > maxRowsPerStmt(thisSchema)) {
         printf("DBMySQL: Error\n");
         printf("max_prepared_stmt_count: %i\n", maxRowsPerStmt(thisSchema));
         DBIngestor_error("DBMySQL - prepareMultiIngestStatement: max_prepared_stmt_count has been violated.\n");
@@ -390,6 +409,7 @@ void* DBMySQL::prepareMultiIngestStatement(DBDataSchema::Schema * thisSchema, in
         DBIngestor_error("DBMySQL - prepareMultiIngestStatement: an error occured in prepareIngestStatement\n");
     }
 
+	myquery = query;
     stmtContainer->stmt = statement;
     stmtContainer->bind = bind;
     stmtContainer->lenBind = numElements * (int)thisSchema->getNumActiveItems();
@@ -605,22 +625,51 @@ int DBMySQL::bindOneRowToStmt(DBDataSchema::Schema * thisSchema, void* thisData,
 }
 
 int DBMySQL::executeStmt(void* preparedStatement) {
-    assert(preparedStatement != NULL);
+    recCount++;
+	
+	assert(preparedStatement != NULL);
     MYSQL_prepStmt *statement = (MYSQL_prepStmt*) preparedStatement;
     
-    if( mysql_stmt_bind_param(statement->stmt, statement->bind) != 0) {
+    if( mysql_stmt_bind_param(statement->stmt, statement->bind) != 0 ) {
         printf("DBMySQL: Error\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL - executeStmt: could not bind statement.\n");
+        if(recCount == 1)
+			DBIngestor_error("DBMySQL - executeStmt: could not bind statement.\n");
     }
     
     
-    if( mysql_stmt_execute(statement->stmt) != 0) {
+    if( mysql_stmt_execute(statement->stmt) != 0 ) {
         printf("DBMySQL: Error\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL - executeStmt: could not execute statement.\n");
+
+		if(resumeMode == true &&
+            (mysql_errno(dbHandler) == 12701 || 
+                mysql_errno(dbHandler) == 1317 || 
+                mysql_errno(dbHandler) == 2003) && 
+            recCount < 1500) {
+			
+            mysql_stmt_close(statement->stmt);
+
+			statement->stmt = mysql_stmt_init(dbHandler);
+
+			if (mysql_stmt_prepare(statement->stmt, myquery.c_str(), strlen(myquery.c_str())) != 0) {
+				printf("DBMySQL: Error\n");
+				printf("Statement: %s\n", myquery.c_str());
+				printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
+				if(mysql_errno(dbHandler) != 2003)
+					DBIngestor_error("DBMySQL - prepareIngestStatement: an error occured in prepareIngestStatement\n");
+			}
+
+			executeStmt(preparedStatement);
+
+            recCount--;
+            return -2;
+		} else {
+			DBIngestor_error("DBMySQL - executeStmt: could not execute statement.\n");
+		}
     }
     
+	recCount--;
     return 1;
 }
 

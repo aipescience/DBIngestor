@@ -74,11 +74,13 @@ int DBSqlite3::disconnect() {
 int DBSqlite3::setSavepoint() {
     int err;
     
-    err = sqlite3_exec(dbHandler, "SAVEPOINT dbIngst_sqlite_sp", NULL, NULL, NULL);
+    if(resumeMode == false) {
+        err = sqlite3_exec(dbHandler, "SAVEPOINT dbIngst_sqlite_sp", NULL, NULL, NULL);
 
-	if(err != SQLITE_OK) {
-        sqlite3_close(dbHandler);
-        DBIngestor_error("DBSqlite3: could not set savepoint.\n");
+        if(err != SQLITE_OK) {
+            sqlite3_close(dbHandler);
+            DBIngestor_error("DBSqlite3: could not set savepoint.\n");
+        }
     }
     
     return 1;
@@ -87,11 +89,13 @@ int DBSqlite3::setSavepoint() {
 int DBSqlite3::rollback() {
     int err;
     
-    err = sqlite3_exec(dbHandler, "ROLLBACK TO SAVEPOINT dbIngst_sqlite_sp", NULL, NULL, NULL);
-    
-	if(err != SQLITE_OK) {
-        sqlite3_close(dbHandler);
-        DBIngestor_error("DBSqlite3: rollback not successfull.\n");
+    if(resumeMode == false) {
+        err = sqlite3_exec(dbHandler, "ROLLBACK TO SAVEPOINT dbIngst_sqlite_sp", NULL, NULL, NULL);
+        
+        if(err != SQLITE_OK) {
+            sqlite3_close(dbHandler);
+            DBIngestor_error("DBSqlite3: rollback not successfull.\n");
+        }
     }
     
     return 1;
@@ -100,12 +104,14 @@ int DBSqlite3::rollback() {
 int DBSqlite3::releaseSavepoint() {
     int err;
     
-    err = sqlite3_exec(dbHandler, "RELEASE SAVEPOINT dbIngst_sqlite_sp", NULL, NULL, NULL);
-    
-	if(err != SQLITE_OK) {
-        printf("%s\n", sqlite3_errmsg(dbHandler));
-        sqlite3_close(dbHandler);
-        DBIngestor_error("DBSqlite3: savepoint not realeased successfully.\n");
+    if(resumeMode == false) {
+        err = sqlite3_exec(dbHandler, "RELEASE SAVEPOINT dbIngst_sqlite_sp", NULL, NULL, NULL);
+        
+        if(err != SQLITE_OK) {
+            printf("%s\n", sqlite3_errmsg(dbHandler));
+            sqlite3_close(dbHandler);
+            DBIngestor_error("DBSqlite3: savepoint not realeased successfully.\n");
+        }
     }
     
     return 1;

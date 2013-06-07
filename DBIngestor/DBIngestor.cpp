@@ -36,6 +36,7 @@ DBIngestor::DBIngestor() {
     disableKeys = 0;
     enableKeys = 0;
     askUserToValidateRead = 1;
+    resumeMode = false;
     myDBAbstractor = NULL;
     myDBSchema = NULL;
     myReader = NULL;
@@ -159,13 +160,15 @@ int DBIngestor::ingestData(int lenBuffer) {
         err = myDBAbstractor->connect(getUsrName(), getPasswd(), getHost(), getPort(), getSocket());
     }
         
+    myDBAbstractor->setResumeMode(getResumeMode());
+
     //first validate schema
     err = validateSchema();
     if(err != 1) {
         DBIngestor_error("DBIngestor: Error in matching the schemas. Check the errors above for information\n");
     }
     
-    if(isDryRun != true) {
+    if(isDryRun != true && resumeMode != true) {
         printf("Setting savepoint...\n");
         err = myDBAbstractor->setSavepoint();
         printf("Setting savepoint DONE\n");
@@ -253,7 +256,7 @@ int DBIngestor::ingestData(int lenBuffer) {
         printf("Re-enabling key DONE\n");
     }
 
-    if(isDryRun != true) {
+    if(isDryRun != true && resumeMode != true) {
         printf("Releasing savepoint...\n");
         myDBAbstractor->releaseSavepoint();
         printf("Releasing savepoint DONE\n");
@@ -338,6 +341,14 @@ bool DBIngestor::getIsDryRun() {
 
 void DBIngestor::setIsDryRun(bool newIsDryRun) {
     isDryRun = newIsDryRun;
+}
+
+bool DBIngestor::getResumeMode() {
+    return resumeMode;
+}
+
+void DBIngestor::setResumeMode(bool newResumeMode) {
+    resumeMode = newResumeMode;
 }
 
 DBDataSchema::Schema * DBIngestor::getSchema() {

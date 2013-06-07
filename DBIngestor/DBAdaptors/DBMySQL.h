@@ -49,7 +49,16 @@ namespace DBServer {
          a pointer to the MYSQL db handler
          */
         MYSQL * dbHandler;
-        
+		std::string myusr;
+		std::string mypwd; 
+		std::string myhost;
+		std::string myport;
+		std::string mysocket;
+		std::string myquery;
+        DBDataSchema::Schema * mySchema;
+		int myNumElements;
+		int recCount;
+
         /*! \brief translates type on the server into DBType. 
          
          \param char * thisTypeString: a string returned by MySQL describing the column type

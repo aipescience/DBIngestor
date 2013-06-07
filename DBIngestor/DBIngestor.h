@@ -99,6 +99,14 @@ namespace DBIngest {
          */
 		bool isDryRun;
 
+        /*! \var bool resumeMode
+         if set to true, the ingest will be done in resume mode. Resume mode will try to reconnect to the server if the
+         connection fails and will continue the ingest at the point the connection failed. Resume mode however needs to 
+         disable any global transactions on the ingest, i.e. will not run the setSavepoint command 
+         (otherwise we cannot resume the ingest).
+         */
+        bool resumeMode;
+
         /*! \var DBDataSchema::Schema * myDBSchema
          pointer to the Schema class, describing the data to be read
          */
@@ -191,6 +199,10 @@ namespace DBIngest {
         bool getIsDryRun();
         
 		void setIsDryRun(bool newIsDryRun);
+
+        bool getResumeMode();
+        
+        void setResumeMode(bool newResumeMode);
 
 		DBDataSchema::Schema * getSchema();
 	
