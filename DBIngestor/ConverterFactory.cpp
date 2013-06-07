@@ -41,6 +41,9 @@
 #include "Converters/convert_ifthenelse.h"
 #include "Converters/convert_concat.h"
 #include "Converters/convert_3concat.h"
+#include "Converters/convert_sqrt.h"
+#include "Converters/convert_power.h"
+#include "Converters/convert_periodicBound.h"
 
 using namespace DBConverter;
 using namespace std;
@@ -61,6 +64,9 @@ ConverterFactory::ConverterFactory() {
     registerConvert<convert_ifthenelse>();
     registerConvert<convert_concat>();
     registerConvert<convert_3concat>();
+    registerConvert<convert_sqrt>();
+    registerConvert<convert_power>();
+    registerConvert<convert_periodicbound>();
 }
 
 ConverterFactory::~ConverterFactory() {
