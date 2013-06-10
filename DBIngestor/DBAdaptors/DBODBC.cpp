@@ -958,7 +958,7 @@ int DBODBC::executeStmt(void* preparedStatement) {
             int count = 0;
             while(connect(myusr, mypwd, myhost, myport, mysocket) == 0 && count < 300) {
                 count++;
-                disonnect();
+                disconnect();
                 sleep(10);
                 printf("\nTrying to reconnect...\n\n");
             }
