@@ -55,7 +55,7 @@ Asserter * AsserterFactory::getAsserter(string name) {
     
     printf("Error DBIngestor:\n");
     printf("Could not find asserter with the name: %s\n", name.c_str());
-	DBIngestor_error("AsserterFactory: could not find the requested asserter...\n");
+	DBIngestor_error("AsserterFactory: could not find the requested asserter...\n", NULL);
     
     return NULL;
 }

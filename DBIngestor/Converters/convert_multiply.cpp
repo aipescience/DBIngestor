@@ -103,7 +103,7 @@ bool convert_multiply::execute(DBDataSchema::DType thisDType, void* value) {
             break;
 
         default:
-            DBIngestor_error("Converter Error: CONV_MULTIPLY does not handle the datatype - ONLY INTS, FLOAT AND DOUBLE SUPPORTED\n");
+            DBIngestor_error("Converter Error: CONV_MULTIPLY does not handle the datatype - ONLY INTS, FLOAT AND DOUBLE SUPPORTED\n", NULL);
             break;
     }
     

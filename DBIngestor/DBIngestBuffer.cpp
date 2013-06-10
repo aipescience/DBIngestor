@@ -105,7 +105,7 @@ int DBIngestBuffer::newRow() {
         bufferArray[currSize] = (void*)malloc(basicSizeRow);
         isNullArray[currSize] = (bool*)malloc(myDBSchema->getNumActiveItems() * sizeof(bool));
         if(bufferArray[currSize] == NULL || isNullArray[currSize] == NULL) {
-            DBIngestor_error("DBIngestBuffer: Not enough memory for allocating new row in the buffer.\n");
+            DBIngestor_error("DBIngestBuffer: Not enough memory for allocating new row in the buffer.\n", NULL);
         }
     }
     
@@ -166,7 +166,7 @@ int DBIngestBuffer::clear() {
     
     int32_t * arrayOfStrings = (int32_t*)malloc(numStrings*sizeof(int32_t));
     if(arrayOfStrings == NULL) {
-        DBIngestor_error("DBIngestBuffer - clear: could not allocate array for freeing strings.\n");
+        DBIngestor_error("DBIngestBuffer - clear: could not allocate array for freeing strings.\n", NULL);
     }
     
     int counter = 0;
@@ -303,7 +303,7 @@ void DBIngestBuffer::setBufferSize(int newBufferSize) {
     assert(newBufferSize > 0);
     
     if(currSize != 0) {
-        DBIngestor_error("DBIngestBuffer: Currently you can only set the buffer size, if the buffer is cleared beforehand.\n");
+        DBIngestor_error("DBIngestBuffer: Currently you can only set the buffer size, if the buffer is cleared beforehand.\n", NULL);
     }
     
     bufferSize = newBufferSize;
@@ -316,7 +316,7 @@ void DBIngestBuffer::setBufferSize(int newBufferSize) {
     bufferArray = (void**)malloc(bufferSize * sizeof(void**));
     isNullArray = (bool**)malloc(bufferSize * sizeof(bool**));
     if(bufferArray == NULL || isNullArray == NULL) {
-        DBIngestor_error("DBIngestBuffer: Not enough memory for allocating bufferArray.\n");
+        DBIngestor_error("DBIngestBuffer: Not enough memory for allocating bufferArray.\n", NULL);
     }
     
     memset(bufferArray, NULL, bufferSize * sizeof(void*));
@@ -347,7 +347,7 @@ void DBIngestBuffer::setDBSchema(DBDataSchema::Schema * newSchema) {
     
     colLookupArray = (int64_t *)malloc(colCount * sizeof(int64_t));
     if(colLookupArray == NULL) {
-        DBIngestor_error("DBIngestBuffer: Not enough memory for allocating column lookup accellerator array.\n");
+        DBIngestor_error("DBIngestBuffer: Not enough memory for allocating column lookup accellerator array.\n", NULL);
     }
     
     //determine minimum size of a row and set the offset lookup array
@@ -393,7 +393,7 @@ int DBIngestBuffer::initPreparedStmt(int numRows) {
     preparedStmt = myDBAbstractor->prepareMultiIngestStatement(myDBSchema, numRows);
     
     if(preparedStmt == NULL) {
-        DBIngestor_error("DBIngestBuffer: Error in generating prepared statement.\n");
+        DBIngestor_error("DBIngestBuffer: Error in generating prepared statement.\n", NULL);
     }
     
     lenPreparedStmt = numRows;

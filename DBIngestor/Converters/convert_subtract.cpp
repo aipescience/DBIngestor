@@ -83,7 +83,7 @@ bool convert_subtract::execute(DBDataSchema::DType thisDType, void* value) {
             break;
             
         default:
-            DBIngestor_error("Converter Error: CONV_SUBTRACT does not handle the datatype - ONLY INTS, FLOAT AND DOUBLE SUPPORTED\n");
+            DBIngestor_error("Converter Error: CONV_SUBTRACT does not handle the datatype - ONLY INTS, FLOAT AND DOUBLE SUPPORTED\n", NULL);
             break;
     }
     

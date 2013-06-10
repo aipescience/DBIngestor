@@ -104,7 +104,7 @@ bool convert_isle::execute(DBDataSchema::DType thisDType, void* value) {
 
 
         default:
-            DBIngestor_error("Converter Error: CONV_isle does not handle the datatype - ONLY INTS, FLOAT AND DOUBLE SUPPORTED\n");
+            DBIngestor_error("Converter Error: CONV_isle does not handle the datatype - ONLY INTS, FLOAT AND DOUBLE SUPPORTED\n", NULL);
             break;
     }
     

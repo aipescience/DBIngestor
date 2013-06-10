@@ -75,7 +75,7 @@ int DBMySQL::connect(string usr, string pwd, string host, string port, string so
     if(dbHandler == NULL) {
         printf("Error MySQL:\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL: could not initialize MySQL database handler\n");
+        DBIngestor_error("DBMySQL: could not initialize MySQL database handler\n", NULL);
     }
     
     if(socket.length() != 0) 
@@ -87,7 +87,7 @@ int DBMySQL::connect(string usr, string pwd, string host, string port, string so
     if(mysql_real_connect(dbHandler, host.c_str(), usr.c_str(), pwd.c_str(), NULL, atoi(port.c_str()), socketStr, 0) == NULL) {
         printf("Error MySQL:\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL: could not connect to MySQL database\n");
+        DBIngestor_error("DBMySQL: could not connect to MySQL database\n", NULL);
     }
     
     isConnected = true;
@@ -109,7 +109,7 @@ int DBMySQL::setSavepoint() {
     if(resumeMode == false && mysql_query(dbHandler, "SAVEPOINT dbIngst_mysql_sp")) {
         printf("Error MySQL:\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL: could not set savepoint.\n");
+        DBIngestor_error("DBMySQL: could not set savepoint.\n", NULL);
     }
     
     return 1;
@@ -119,7 +119,7 @@ int DBMySQL::rollback() {
     if(resumeMode == false && mysql_query(dbHandler, "ROLLBACK TO SAVEPOINT dbIngst_mysql_sp")) {
         printf("Error MySQL:\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL: rollback not successfull.\n");
+        DBIngestor_error("DBMySQL: rollback not successfull.\n", NULL);
     }
     
     return 1;
@@ -129,7 +129,7 @@ int DBMySQL::releaseSavepoint() {
     if(resumeMode == false && mysql_query(dbHandler, "RELEASE SAVEPOINT dbIngst_mysql_sp")) {
         printf("Error MySQL:\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        printf("DBMySQL: savepoint not realeased successfully.\n");
+        printf("DBMySQL: savepoint not realeased successfully.\n", NULL);
     }
     
     return 1;
@@ -146,7 +146,7 @@ int DBMySQL::disableKeys(DBDataSchema::Schema * thisSchema) {
     if(mysql_query(dbHandler, query.c_str())) {
         printf("Error MySQL:\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL: could not disable keys.\n");
+        DBIngestor_error("DBMySQL: could not disable keys.\n", NULL);
     }
     
     return 1;
@@ -163,7 +163,7 @@ int DBMySQL::enableKeys(DBDataSchema::Schema * thisSchema) {
     if(mysql_query(dbHandler, query.c_str())) {
         printf("Error MySQL:\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL: could not reenable keys.\n");
+        DBIngestor_error("DBMySQL: could not reenable keys.\n", NULL);
     }
     
     return 1;
@@ -182,7 +182,7 @@ DBDataSchema::Schema * DBMySQL::getSchema(string database, string table) {
     if(mysql_query(dbHandler, queryString)) {
         printf("Error MySQL:\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL - getSchema: table not found");
+        DBIngestor_error("DBMySQL - getSchema: table not found", NULL);
     }
     
     MYSQL_RES *result = mysql_store_result(dbHandler);
@@ -226,7 +226,7 @@ void* DBMySQL::prepareIngestStatement(DBDataSchema::Schema * thisSchema) {
 
     stmtContainer = (MYSQL_prepStmt*)malloc(sizeof(MYSQL_prepStmt));
     if (stmtContainer == NULL) {
-        DBIngestor_error("DBMySQL - prepareIngestStatement: could not allocate statement container.");
+        DBIngestor_error("DBMySQL - prepareIngestStatement: could not allocate statement container.", NULL);
     }
     
     stmtContainer->prepared = false;
@@ -237,7 +237,7 @@ void* DBMySQL::prepareIngestStatement(DBDataSchema::Schema * thisSchema) {
     MYSQL_BIND *bind;
     bind = (MYSQL_BIND*)malloc(thisSchema->getNumActiveItems() * sizeof(MYSQL_BIND));
     if(bind == NULL) {
-        DBIngestor_error("DBMySQL - prepareIngestStatement: could not allocate bind container.");
+        DBIngestor_error("DBMySQL - prepareIngestStatement: could not allocate bind container.", NULL);
     }
     //zero the bind structure
     memset(bind, 0, thisSchema->getNumActiveItems() * sizeof(MYSQL_BIND));
@@ -246,7 +246,7 @@ void* DBMySQL::prepareIngestStatement(DBDataSchema::Schema * thisSchema) {
     if(statement == NULL) {
         printf("DBMySQL: Error\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL - prepareIngestStatement: could not allocate statement handler.");
+        DBIngestor_error("DBMySQL - prepareIngestStatement: could not allocate statement handler.", NULL);
     }
     
     //construct query string
@@ -301,7 +301,7 @@ void* DBMySQL::prepareIngestStatement(DBDataSchema::Schema * thisSchema) {
         printf("DBMySQL: Error\n");
         printf("Statement: %s\n", query.c_str());
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL - prepareIngestStatement: an error occured in prepareIngestStatement\n");
+        DBIngestor_error("DBMySQL - prepareIngestStatement: an error occured in prepareIngestStatement\n", NULL);
     }
     
 	myquery = query;
@@ -319,13 +319,13 @@ void* DBMySQL::prepareMultiIngestStatement(DBDataSchema::Schema * thisSchema, in
 	if(numElements > maxRowsPerStmt(thisSchema)) {
         printf("DBMySQL: Error\n");
         printf("max_prepared_stmt_count: %i\n", maxRowsPerStmt(thisSchema));
-        DBIngestor_error("DBMySQL - prepareMultiIngestStatement: max_prepared_stmt_count has been violated.\n");
+        DBIngestor_error("DBMySQL - prepareMultiIngestStatement: max_prepared_stmt_count has been violated.\n", NULL);
     }
 
     MYSQL_prepStmt * stmtContainer;
     stmtContainer = (MYSQL_prepStmt*)malloc(sizeof(MYSQL_prepStmt));
     if (stmtContainer == NULL) {
-        DBIngestor_error("DBMySQL - prepareMultiIngestStatement: could not allocate statement container.");
+        DBIngestor_error("DBMySQL - prepareMultiIngestStatement: could not allocate statement container.", NULL);
     }
     
     stmtContainer->prepared = false;
@@ -336,7 +336,7 @@ void* DBMySQL::prepareMultiIngestStatement(DBDataSchema::Schema * thisSchema, in
     MYSQL_BIND *bind;
     bind = (MYSQL_BIND*)malloc(numElements * thisSchema->getNumActiveItems() * sizeof(MYSQL_BIND));
     if(bind == NULL) {
-        DBIngestor_error("DBMySQL - prepareMultiIngestStatement: could not allocate bind container.");
+        DBIngestor_error("DBMySQL - prepareMultiIngestStatement: could not allocate bind container.", NULL);
     }
     //zero the bind structure
     memset(bind, 0, numElements * thisSchema->getNumActiveItems() * sizeof(MYSQL_BIND));
@@ -345,7 +345,7 @@ void* DBMySQL::prepareMultiIngestStatement(DBDataSchema::Schema * thisSchema, in
     if(statement == NULL) {
         printf("DBMySQL: Error\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL - prepareMultiIngestStatement: could not allocate statement handler.");
+        DBIngestor_error("DBMySQL - prepareMultiIngestStatement: could not allocate statement handler.", NULL);
     }
 
     //construct query string
@@ -406,7 +406,7 @@ void* DBMySQL::prepareMultiIngestStatement(DBDataSchema::Schema * thisSchema, in
         printf("DBMySQL: Error\n");
         printf("Statement: %s\n", query.c_str());
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL - prepareMultiIngestStatement: an error occured in prepareIngestStatement\n");
+        DBIngestor_error("DBMySQL - prepareMultiIngestStatement: an error occured in prepareIngestStatement\n", NULL);
     }
 
 	myquery = query;
@@ -423,14 +423,14 @@ int DBMySQL::insertOneRow(DBDataSchema::Schema * thisSchema, void** thisData) {
     query = buildOneRowInsertString(thisSchema, thisData, DBTYPE_MYSQL);
 
     if(query.size() == 0) {
-        DBIngestor_error("DBMySQL - insertOneRow: an error occured in insertOneRow in switch while binding\n");
+        DBIngestor_error("DBMySQL - insertOneRow: an error occured in insertOneRow in switch while binding\n", NULL);
     }
     
     if( mysql_query(dbHandler, query.c_str()) != 0) {
         printf("DBMySQL: Error\n");
         printf("Statement: %s\n", query.c_str());
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL - insertOneRow without prepared statement: an error occured in the ingest.\n");
+        DBIngestor_error("DBMySQL - insertOneRow without prepared statement: an error occured in the ingest.\n", NULL);
     }
     
     return 1;    
@@ -582,7 +582,7 @@ int DBMySQL::bindOneRowToStmt(DBDataSchema::Schema * thisSchema, void* thisData,
                 byteCount += sizeof(double);
                 break;
             default:
-                DBIngestor_error("castDTypeToDBType: DBType not known, I don't know what to do.");
+                DBIngestor_error("castDTypeToDBType: DBType not known, I don't know what to do.", NULL);
         }
         
         i++;
@@ -634,7 +634,7 @@ int DBMySQL::executeStmt(void* preparedStatement) {
         printf("DBMySQL: Error\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
         if(recCount == 1)
-			DBIngestor_error("DBMySQL - executeStmt: could not bind statement.\n");
+			DBIngestor_error("DBMySQL - executeStmt: could not bind statement.\n", NULL);
     }
     
     
@@ -657,7 +657,7 @@ int DBMySQL::executeStmt(void* preparedStatement) {
 				printf("Statement: %s\n", myquery.c_str());
 				printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
 				if(mysql_errno(dbHandler) != 2003)
-					DBIngestor_error("DBMySQL - prepareIngestStatement: an error occured in prepareIngestStatement\n");
+					DBIngestor_error("DBMySQL - prepareIngestStatement: an error occured in prepareIngestStatement\n", NULL);
 			}
 
 			executeStmt(preparedStatement);
@@ -665,7 +665,7 @@ int DBMySQL::executeStmt(void* preparedStatement) {
             recCount--;
             return -2;
 		} else {
-			DBIngestor_error("DBMySQL - executeStmt: could not execute statement.\n");
+			DBIngestor_error("DBMySQL - executeStmt: could not execute statement.\n", NULL);
 		}
     }
     
@@ -694,7 +694,7 @@ int DBMySQL::finalizePreparedStatement(void* preparedStatement) {
     if(mysql_stmt_close(statement->stmt) != 0) {
         printf("DBMySQL: Error\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL - finalizePreparedStatement: error in stmt close.\n");
+        DBIngestor_error("DBMySQL - finalizePreparedStatement: error in stmt close.\n", NULL);
     }
     
     free(statement);
@@ -708,7 +708,7 @@ int DBMySQL::maxRowsPerStmt(DBDataSchema::Schema * thisSchema) {
     if(mysql_query(dbHandler, queryString)) {
         printf("Error MySQL:\n");
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL - maxRowsPerStmt: cannot determine the maximum prepared statement length");
+        DBIngestor_error("DBMySQL - maxRowsPerStmt: cannot determine the maximum prepared statement length", NULL);
     }
     
     MYSQL_RES *result = mysql_store_result(dbHandler);
@@ -730,7 +730,7 @@ void * DBMySQL::initGetCompleteTable(DBDataSchema::Schema * thisSchema) {
     MYSQL_prepStmt * stmtContainer;
     stmtContainer = (MYSQL_prepStmt*)malloc(sizeof(MYSQL_prepStmt));
     if (stmtContainer == NULL) {
-        DBIngestor_error("DBMySQL - prepareIngestStatement: could not allocate statement container.");
+        DBIngestor_error("DBMySQL - prepareIngestStatement: could not allocate statement container.", NULL);
     }
     
     stmtContainer->prepared = false;
@@ -743,7 +743,7 @@ void * DBMySQL::initGetCompleteTable(DBDataSchema::Schema * thisSchema) {
     MYSQL_BIND *bind;
     bind = (MYSQL_BIND*)malloc(thisSchema->getNumActiveItems() * sizeof(MYSQL_BIND));
     if(bind == NULL) {
-        DBIngestor_error("DBMySQL - prepareMultiIngestStatement: could not allocate bind container.");
+        DBIngestor_error("DBMySQL - prepareMultiIngestStatement: could not allocate bind container.", NULL);
     }
     //zero the bind structure
     memset(bind, 0, thisSchema->getNumActiveItems() * sizeof(MYSQL_BIND));
@@ -781,7 +781,7 @@ void * DBMySQL::initGetCompleteTable(DBDataSchema::Schema * thisSchema) {
         printf("DBMySQL: Error\n");
         printf("Statement: %s\n", query.c_str());
         printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-        DBIngestor_error("DBMySQL - initGetCompleteTable: an error occured in prepareIngestStatement\n");
+        DBIngestor_error("DBMySQL - initGetCompleteTable: an error occured in prepareIngestStatement\n", NULL);
     }
     
     stmtContainer->stmt = statement;
@@ -802,7 +802,7 @@ int DBMySQL::getNextRow(DBDataSchema::Schema * thisSchema, void* thisData, void 
         if( mysql_stmt_execute(statement->stmt) != 0) {
             printf("DBMySQL: Error\n");
             printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-            DBIngestor_error("DBMySQL - getNextRow: could not execute statement.\n");
+            DBIngestor_error("DBMySQL - getNextRow: could not execute statement.\n", NULL);
         }
         
         bindOneRowToStmt(thisSchema, thisData, preparedStatement, 0);
@@ -810,7 +810,7 @@ int DBMySQL::getNextRow(DBDataSchema::Schema * thisSchema, void* thisData, void 
         if( mysql_stmt_bind_result(statement->stmt, statement->bind) != 0) {
             printf("DBMySQL: Error\n");
             printf("ErrNr %u: %s\n", mysql_errno(dbHandler), mysql_error(dbHandler));
-            DBIngestor_error("DBMySQL - getNextRow: could not bind statement.\n");
+            DBIngestor_error("DBMySQL - getNextRow: could not bind statement.\n", NULL);
         }
         
         statement->prepared = true;
@@ -925,7 +925,7 @@ DBDataSchema::DBType DBMySQL::getType(char * thisTypeString) {
     
     printf("Error MySQL:\n");
     printf("Err in type: %s\n", thisTypeString);
-    DBIngestor_error("DBMySQL: this type used in the table is not yet supported. Please implement support...\n");
+    DBIngestor_error("DBMySQL: this type used in the table is not yet supported. Please implement support...\n", NULL);
 
     return (DBDataSchema::DBType)0;
 }
@@ -965,7 +965,7 @@ enum_field_types DBMySQL::translateTypeToMYSQL(DBDataSchema::DBType thisType) {
         case DBDataSchema::DBT_TIME:
             return MYSQL_TYPE_TIME;
         default:
-            DBIngestor_error("DBMySQL: you have specified an unsupported MYSQL data type.\n");
+            DBIngestor_error("DBMySQL: you have specified an unsupported MYSQL data type.\n", NULL);
             break;
     }
     

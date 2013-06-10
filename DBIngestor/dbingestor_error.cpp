@@ -21,8 +21,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void DBIngestor_error(const char * errorStr) {
+void DBIngestor_error(const char * errorStr, DBReader::Reader * reader) {
     fprintf(stderr, "ERROR IN DBIngestor:\n");
+
+    if(reader != NULL) {
+    	fprintf(stderr, "Error occured in line %lli of the input data file.\n", reader->getReadCount());
+    }
+
     fprintf(stderr, "%s\n", errorStr);
     exit(EXIT_FAILURE);
 }

@@ -103,7 +103,7 @@ bool convert_divide::execute(DBDataSchema::DType thisDType, void* value) {
             break;
             
         default:
-            DBIngestor_error("Converter Error: CONV_DIVIDE does not handle the datatype - ONLY INTS, FLOAT AND DOUBLE SUPPORTED\n");
+            DBIngestor_error("Converter Error: CONV_DIVIDE does not handle the datatype - ONLY INTS, FLOAT AND DOUBLE SUPPORTED\n", NULL);
             break;
     }
     

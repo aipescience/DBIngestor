@@ -165,7 +165,7 @@ int DBIngestor::ingestData(int lenBuffer) {
     //first validate schema
     err = validateSchema();
     if(err != 1) {
-        DBIngestor_error("DBIngestor: Error in matching the schemas. Check the errors above for information\n");
+        DBIngestor_error("DBIngestor: Error in matching the schemas. Check the errors above for information\n", NULL);
     }
     
     if(isDryRun != true && resumeMode != true) {
@@ -217,7 +217,7 @@ int DBIngestor::ingestData(int lenBuffer) {
             if(err != 1) {
                 printf("Error in reading line %i\n", counter);
                 printf("Problem with schema item number: %i\n", i);
-                DBIngestor_error("DBIngestor: Ingesting NULL in column that is set IS NOT NULL!\n");
+                DBIngestor_error("DBIngestor: Ingesting NULL in column that is set IS NOT NULL!\n", NULL);
             }
             
             //if this was a string, free it on the reader side... it was already copied somewhere else...

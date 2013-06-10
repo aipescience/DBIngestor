@@ -135,7 +135,7 @@ DBType DBDataSchema::convDTypeToDBType(DType thisDType) {
             return DBT_REAL;
             break;
         default:
-            DBIngestor_error("castStringToDType: DType not known, I don't know what to do.");
+            DBIngestor_error("castStringToDType: DType not known, I don't know what to do.", NULL);
     }
     
 }
@@ -200,7 +200,7 @@ void DBDataSchema::castDTypeToDBType(void * value, DType fromThisType, DBType to
             convToReal(value, fromThisType, result);
             break;
         default:
-            DBIngestor_error("castDTypeToDBType: DBType not known, I don't know what to do.");
+            DBIngestor_error("castDTypeToDBType: DBType not known, I don't know what to do.", NULL);
     }
 }
 
@@ -245,7 +245,7 @@ void convToChar(void* value, DType thisDType, void* result) {
             tmpStr = boost::lexical_cast<std::string>((double*)value);
             break;
         default:
-            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.");
+            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.", NULL);
     }
 
     outputStr = (char*)malloc((tmpStr.size()+1)*sizeof(char));
@@ -291,7 +291,7 @@ void convToBit(void* value, DType thisDType, void* result) {
             *(int8_t*) result = (int8_t)*(double*)value;
             break;
         default:
-            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.");
+            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.", NULL);
     }
     
     if(*(int8_t*) result != 0) {
@@ -337,7 +337,7 @@ void convToTinyint(void* value, DType thisDType, void* result) {
             *(int8_t*) result = (int8_t)*(double*)value;
             break;
         default:
-            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.");
+            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.", NULL);
     }
 }
 
@@ -381,7 +381,7 @@ void convToBigint(void* value, DType thisDType, void* result) {
             *(int64_t*) result = (int64_t)*(double*)value;
             break;
         default:
-            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.");
+            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.", NULL);
     }
 }
 
@@ -421,7 +421,7 @@ void convToInt(void* value, DType thisDType, void* result) {
             *(int32_t*) result = (int32_t)*(double*)value;
             break;
         default:
-            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.");
+            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.", NULL);
     }
 }
         
@@ -461,7 +461,7 @@ void convToSmallint(void* value, DType thisDType, void* result) {
             *(int16_t*) result = (int16_t)*(double*)value;
             break;
         default:
-            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.");
+            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.", NULL);
     }
 }
 
@@ -503,7 +503,7 @@ void convToUTinyint(void* value, DType thisDType, void* result) {
             *(uint8_t*) result = (uint8_t)*(double*)value;
             break;
         default:
-            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.");
+            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.", NULL);
     }
 }
 
@@ -547,7 +547,7 @@ void convToUBigint(void* value, DType thisDType, void* result) {
             *(uint64_t*) result = (uint64_t)*(double*)value;
             break;
         default:
-            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.");
+            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.", NULL);
     }
 }
 
@@ -587,7 +587,7 @@ void convToUInt(void* value, DType thisDType, void* result) {
             *(uint32_t*) result = (uint32_t)*(double*)value;
             break;
         default:
-            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.");
+            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.", NULL);
     }
 }
 
@@ -627,7 +627,7 @@ void convToUSmallint(void* value, DType thisDType, void* result) {
             *(uint16_t*) result = (uint16_t)*(double*)value;
             break;
         default:
-            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.");
+            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.", NULL);
     }
 }
 
@@ -673,7 +673,7 @@ void convToFloat(void* value, DType thisDType, void* result) {
             *(float*) result = (float)*(double*)value;
             break;
         default:
-            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.");
+            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.", NULL);
     }
 }
 
@@ -713,16 +713,16 @@ void convToReal(void* value, DType thisDType, void* result) {
             *(double*) result = *(double*)value;
             break;
         default:
-            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.");
+            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.", NULL);
     }
 }
 
 void convToDate(void* value, DType thisDType, void* result) {
-    DBIngestor_error("castDTypeToDBType: Date types not yet supported.");
+    DBIngestor_error("castDTypeToDBType: Date types not yet supported.", NULL);
 }
 
 void convToTime(void* value, DType thisDType, void* result) {
-    DBIngestor_error("castDTypeToDBType: Time types not yet supported.");
+    DBIngestor_error("castDTypeToDBType: Time types not yet supported.", NULL);
 }
 
 void convToAny(void* value, DType thisDType, void* result) {
@@ -766,7 +766,7 @@ void convToAny(void* value, DType thisDType, void* result) {
             *(double*) result = *(double*)value;
             break;
         default:
-            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.");
+            DBIngestor_error("castDTypeToDBType: DType not known, I don't know what to do.", NULL);
     }
 }
 

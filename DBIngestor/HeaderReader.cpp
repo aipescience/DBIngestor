@@ -40,7 +40,7 @@ HeaderReader::~HeaderReader() {
 }
 
 void HeaderReader::parseHeader(FILE * filePointer) {
-	DBIngestor_error("Not yet implemented");
+	DBIngestor_error("Not yet implemented", NULL);
 }
 
 void* HeaderReader::getItemBySearch(DBDataSchema::DataObjDesc * thisItem, string searchString) {
@@ -60,7 +60,7 @@ void* HeaderReader::getItemBySearch(DBDataSchema::DataObjDesc * thisItem, string
         } else {
             printf("Error DBIngestor:\n");
             printf("Could not find header item: %s\n", searchString.c_str());
-            DBIngestor_error("HeaderReader: Header read error: Could not read the header item.\n");
+            DBIngestor_error("HeaderReader: Header read error: Could not read the header item.\n", NULL);
         }
         
         //ask user for validation
@@ -73,7 +73,7 @@ void* HeaderReader::getItemBySearch(DBDataSchema::DataObjDesc * thisItem, string
             getline(cin, answer);
             
             if(answer.length() != 0 && answer.at(0) != 'Y' && answer.at(0) != 'y') {
-                DBIngestor_error("HeaderReader: You did not approve my suggestion. Please adjust the structure file and try again.\n");
+                DBIngestor_error("HeaderReader: You did not approve my suggestion. Please adjust the structure file and try again.\n", NULL);
             }
         }
         

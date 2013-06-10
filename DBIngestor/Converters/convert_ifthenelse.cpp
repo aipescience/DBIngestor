@@ -104,7 +104,7 @@ bool convert_ifthenelse::execute(DBDataSchema::DType thisDType, void* value) {
 
 
         default:
-            DBIngestor_error("Converter Error: CONV_ifthenelse does not handle the datatype - ONLY INTS, FLOAT AND DOUBLE SUPPORTED\n");
+            DBIngestor_error("Converter Error: CONV_ifthenelse does not handle the datatype - ONLY INTS, FLOAT AND DOUBLE SUPPORTED\n", NULL);
             break;
     }
     

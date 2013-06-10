@@ -20,6 +20,8 @@
 #ifndef DBIngestor_dbingestor_error_h
 #define DBIngestor_dbingestor_error_h
 
-void DBIngestor_error(const char * errorStr);
+ #include "Reader.h"
+
+void DBIngestor_error(const char * errorStr, DBReader::Reader * reader = NULL);
 
 #endif

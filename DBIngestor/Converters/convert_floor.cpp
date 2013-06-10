@@ -59,7 +59,7 @@ bool convert_floor::execute(DBDataSchema::DType thisDType, void* value) {
             break;
 
         default:
-            DBIngestor_error("Converter Error: CONV_FLOOR does not handle the datatype - ONLY FLOAT AND DOUBLE SUPPORTED\n");
+            DBIngestor_error("Converter Error: CONV_FLOOR does not handle the datatype - ONLY FLOAT AND DOUBLE SUPPORTED\n", NULL);
             break;
     }
     

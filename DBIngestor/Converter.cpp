@@ -75,7 +75,7 @@ void Converter::setFunctionParameters(convFunctionParam * paramArray, int size) 
         if(currDTypeArr == NULL) {
             printf("Error:\n");
             printf("Converter: %s\n", name.c_str());
-            DBIngestor_error("Converter setFunctionParameters: No memory for DType array!\n");
+            DBIngestor_error("Converter setFunctionParameters: No memory for DType array!\n", NULL);
         }
         
         for(int j=0; j<paramArray[i].numTypes; j++) {
@@ -124,7 +124,7 @@ int Converter::registerInternalParameter(int parNum, DBDataSchema::DType parType
     printf("Error:\n");
     printf("Converter: %s\n", name.c_str());
     printf("Parameter num: %i\n", parNum);
-    DBIngestor_error("Converter registerParameter: The DType you specified for this parameter is not supported by this converter!\n");
+    DBIngestor_error("Converter registerParameter: The DType you specified for this parameter is not supported by this converter!\n", NULL);
     
     return 0;    
 }

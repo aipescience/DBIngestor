@@ -53,7 +53,7 @@ int DBSqlite3::connect(string usr, string pwd, string host, string port, string 
 	err = sqlite3_open(host.c_str(), &dbHandler);
     if (err != SQLITE_OK) {
         sqlite3_close(dbHandler);
-        DBIngestor_error("DBSqlite3: could not open a connection to the SQLite3 database\n");
+        DBIngestor_error("DBSqlite3: could not open a connection to the SQLite3 database\n", NULL);
     }
     
     isConnected = true;
@@ -79,7 +79,7 @@ int DBSqlite3::setSavepoint() {
 
         if(err != SQLITE_OK) {
             sqlite3_close(dbHandler);
-            DBIngestor_error("DBSqlite3: could not set savepoint.\n");
+            DBIngestor_error("DBSqlite3: could not set savepoint.\n", NULL);
         }
     }
     
@@ -94,7 +94,7 @@ int DBSqlite3::rollback() {
         
         if(err != SQLITE_OK) {
             sqlite3_close(dbHandler);
-            DBIngestor_error("DBSqlite3: rollback not successfull.\n");
+            DBIngestor_error("DBSqlite3: rollback not successfull.\n", NULL);
         }
     }
     
@@ -110,7 +110,7 @@ int DBSqlite3::releaseSavepoint() {
         if(err != SQLITE_OK) {
             printf("%s\n", sqlite3_errmsg(dbHandler));
             sqlite3_close(dbHandler);
-            DBIngestor_error("DBSqlite3: savepoint not realeased successfully.\n");
+            DBIngestor_error("DBSqlite3: savepoint not realeased successfully.\n", NULL);
         }
     }
     
@@ -144,13 +144,13 @@ DBDataSchema::Schema * DBSqlite3::getSchema(string database, string table) {
         printf("DBSqlite3: Error");
         printf("%s\n", sqlite3_errmsg(dbHandler));
         sqlite3_close(dbHandler);
-        DBIngestor_error("DBSqlite3 - getSchema: an error occured in getSchema\n");
+        DBIngestor_error("DBSqlite3 - getSchema: an error occured in getSchema\n", NULL);
     }
     
     //check if any result has been returned 
     if(sqlite3_column_count(statement) != 6) {
         sqlite3_close(dbHandler);
-        DBIngestor_error("DBSqlite3 - getSchema: table not found");
+        DBIngestor_error("DBSqlite3 - getSchema: table not found", NULL);
     }
     
     retSchema->setDbName(database);
@@ -227,7 +227,7 @@ void* DBSqlite3::prepareIngestStatement(DBDataSchema::Schema * thisSchema) {
         printf("%s\n", sqlite3_errmsg(dbHandler));
         printf("Statement: %s\n", query.c_str());
         sqlite3_close(dbHandler);
-        DBIngestor_error("DBSqlite3 - prepareIngestStatement: an error occured in prepareIngestStatement\n");
+        DBIngestor_error("DBSqlite3 - prepareIngestStatement: an error occured in prepareIngestStatement\n", NULL);
     }
     
     return (void*)statement;    
@@ -238,7 +238,7 @@ void* DBSqlite3::prepareMultiIngestStatement(DBDataSchema::Schema * thisSchema, 
         printf("DBSqlite3: Error\n");
         printf("SQLITE_LIMIT_COMPOUND_SELECT: %i\n", maxRowsPerStmt(thisSchema));
         sqlite3_close(dbHandler);
-        DBIngestor_error("DBSqlite3 - prepareMultiIngestStatement: SQLITE_LIMIT_COMPOUND_SELECT has been violated.\n");
+        DBIngestor_error("DBSqlite3 - prepareMultiIngestStatement: SQLITE_LIMIT_COMPOUND_SELECT has been violated.\n", NULL);
         
     }
     
@@ -298,7 +298,7 @@ void* DBSqlite3::prepareMultiIngestStatement(DBDataSchema::Schema * thisSchema, 
         printf("%s\n", sqlite3_errmsg(dbHandler));
         printf("Statement: %s\n", query.c_str());
         sqlite3_close(dbHandler);
-        DBIngestor_error("DBSqlite3 - prepareMultiIngestStatement: an error occured in prepareIngestStatement\n");
+        DBIngestor_error("DBSqlite3 - prepareMultiIngestStatement: an error occured in prepareIngestStatement\n", NULL);
     }
     
     return (void*)statement;    
@@ -313,7 +313,7 @@ int DBSqlite3::insertOneRow(DBDataSchema::Schema * thisSchema, void** thisData) 
     
     if(query.size() == 0) {
         sqlite3_close(dbHandler);
-        DBIngestor_error("DBSqlite3 - insertOneRow: an error occured in insertOneRow in switch while binding\n");
+        DBIngestor_error("DBSqlite3 - insertOneRow: an error occured in insertOneRow in switch while binding\n", NULL);
     }
     
     err = sqlite3_exec(dbHandler, query.c_str(), NULL, NULL, NULL);
@@ -323,7 +323,7 @@ int DBSqlite3::insertOneRow(DBDataSchema::Schema * thisSchema, void** thisData) 
         printf("%s\n", sqlite3_errmsg(dbHandler));
         printf("Statement: %s\n", query.c_str());
         sqlite3_close(dbHandler);
-        DBIngestor_error("DBSqlite3 - insertOneRow without prepared statement: an error occured in the ingest.\n");
+        DBIngestor_error("DBSqlite3 - insertOneRow without prepared statement: an error occured in the ingest.\n", NULL);
     }
     
     return 1;    
@@ -438,12 +438,12 @@ int DBSqlite3::bindOneRowToStmt(DBDataSchema::Schema * thisSchema, void* thisDat
                 break;
             default:
                 sqlite3_close(dbHandler);
-                DBIngestor_error("DBSqlite3 - bindOneRowToStmt: an error occured in bindOneRowToStmt in switch while binding\n");
+                DBIngestor_error("DBSqlite3 - bindOneRowToStmt: an error occured in bindOneRowToStmt in switch while binding\n", NULL);
         }
         
         if(err != SQLITE_OK) {
             sqlite3_close(dbHandler);
-            DBIngestor_error("DBSqlite3 - bindOneRowToStmt: an error occured in bindOneRowToStmt while binding\n");
+            DBIngestor_error("DBSqlite3 - bindOneRowToStmt: an error occured in bindOneRowToStmt while binding\n", NULL);
         }
         
         i++;
@@ -467,7 +467,7 @@ int DBSqlite3::executeStmt(void* preparedStatement) {
         printf("DBSqlite3: Error\n");
         printf("%s\n", sqlite3_errmsg(dbHandler));
         sqlite3_close(dbHandler);
-        DBIngestor_error("DBSqlite3 - executeStatement: error in step.\n");
+        DBIngestor_error("DBSqlite3 - executeStatement: error in step.\n", NULL);
     }
     
     err = sqlite3_reset(statement);
@@ -475,7 +475,7 @@ int DBSqlite3::executeStmt(void* preparedStatement) {
         printf("DBSqlite3: Error\n");
         printf("%s\n", sqlite3_errmsg(dbHandler));
         sqlite3_close(dbHandler);
-        DBIngestor_error("DBSqlite3 - executeStatement: error in reset.\n");
+        DBIngestor_error("DBSqlite3 - executeStatement: error in reset.\n", NULL);
     }
     
     return 1;
@@ -491,7 +491,7 @@ int DBSqlite3::finalizePreparedStatement(void* preparedStatement) {
         printf("DBSqlite3: Error\n");
         printf("%s\n", sqlite3_errmsg(dbHandler));
         sqlite3_close(dbHandler);
-        DBIngestor_error("DBSqlite3 - finalizePreparedStatement: error in finalize.\n");
+        DBIngestor_error("DBSqlite3 - finalizePreparedStatement: error in finalize.\n", NULL);
     }
 
     return 1;

@@ -120,7 +120,7 @@ bool convert_periodicbound::execute(DBDataSchema::DType thisDType, void* value) 
             break;
             
         default:
-            DBIngestor_error("Converter Error: CONV_PERIODICBOUND does not handle this datatype - ONLY INTS, FLOAT AND DOUBLE SUPPORTED\n");
+            DBIngestor_error("Converter Error: CONV_PERIODICBOUND does not handle this datatype - ONLY INTS, FLOAT AND DOUBLE SUPPORTED\n", NULL);
 	    break;
     }
     

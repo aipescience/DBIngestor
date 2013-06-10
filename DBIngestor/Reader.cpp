@@ -28,6 +28,7 @@ using namespace std;
 Reader::Reader() {
     header = NULL;
     schema = NULL;
+    readCount = 0;
 }
 
 Reader::~Reader() {
@@ -74,7 +75,7 @@ void Reader::checkAssertions(DBDataSchema::DataObjDesc * thisItem, void* result)
             printf("Error in Assertion\n");
             printf("Assertion Number: %i\n", i);
             printf("Assertion Name: %s\n", currAsserter->getName().c_str());
-            DBIngestor_error("DBIngestor: Error in assertion. Assertion failed.\n");
+            DBIngestor_error("DBIngestor: Error in assertion. Assertion failed.\n", this);
         }
     }
 }
@@ -101,7 +102,7 @@ bool Reader::applyConversions(DBDataSchema::DataObjDesc * thisItem, void* result
             printf("Conversion Number: %i\n", i);
             printf("In item: %s\n", thisItem->getDataObjName().c_str());
             printf("Assertion Name: %s\n", currConverter->getName().c_str());
-            DBIngestor_error("DBIngestor: Error in conversion. Conversion returned an error.\n");
+            DBIngestor_error("DBIngestor: Error in conversion. Conversion returned an error.\n", this);
         }
         
         if(err == -1) {
@@ -110,4 +111,8 @@ bool Reader::applyConversions(DBDataSchema::DataObjDesc * thisItem, void* result
     }
     
     return false;
+}
+
+unsigned long long Reader::getReadCount() {
+
 }

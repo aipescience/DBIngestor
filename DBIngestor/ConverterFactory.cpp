@@ -89,7 +89,7 @@ Converter * ConverterFactory::getConverter(string name) {
     
     printf("Error DBIngestor:\n");
     printf("Could not find Converter with the name: %s\n", name.c_str());
-	DBIngestor_error("ConverterFactory: could not find the requested Converter...\n");
+	DBIngestor_error("ConverterFactory: could not find the requested Converter...\n", NULL);
     
     return NULL;
 }

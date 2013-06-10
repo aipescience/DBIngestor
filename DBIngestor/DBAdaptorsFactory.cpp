@@ -99,7 +99,7 @@ DBAbstractor * DBAdaptorsFactory::getDBAdaptors(string name) {
 
     if (found == 0 || dbServer == NULL) {
         printf("Error: Sorry the database %s is not yet supported. To add support, implement the DBAbstractor class accordingly\n", name.c_str());
-        DBIngestor_error("DBAdaptorsFactors: DB not yet supported.\n");
+        DBIngestor_error("DBAdaptorsFactors: DB not yet supported.\n", NULL);
     }
 
     return dbServer;

@@ -58,6 +58,8 @@ namespace DBReader {
         void checkAssertions(DBDataSchema::DataObjDesc * thisItem, void* result);
         bool applyConversions(DBDataSchema::DataObjDesc * thisItem, void* result);
 
+        unsigned long long readCount;
+
 	public:
         Reader();
         
@@ -134,6 +136,8 @@ namespace DBReader {
         DBDataSchema::Schema * getSchema();
         
         void setSchema(DBDataSchema::Schema * newSchema);
+
+        unsigned long long getReadCount();
     };
 }
 

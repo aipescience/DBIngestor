@@ -62,7 +62,7 @@ bool convert_3concat::execute(DBDataSchema::DType thisDType, void* value) {
             char * buffer3 = castToString(currFuncInstanceDTypes[2], functionValues[2]);
             char * returnBuffer = (char*) malloc(strlen(buffer1) + strlen(buffer2) + strlen(buffer3) + 1);
             if(returnBuffer == NULL)
-                DBIngestor_error("Converter Error: Could not allocate memory in CONV_3CONCAT\n");
+                DBIngestor_error("Converter Error: Could not allocate memory in CONV_3CONCAT\n", NULL);
 
             strncpy((char*)returnBuffer, buffer1, strlen(buffer1));
             strncpy((char*)(returnBuffer + strlen(buffer1)), buffer2, strlen(buffer2));
@@ -76,7 +76,7 @@ bool convert_3concat::execute(DBDataSchema::DType thisDType, void* value) {
             return 1;}
             break;
         default:
-            DBIngestor_error("Converter Error: CONV_3CONCAT does not handle the datatype - ONLY STRINGS SUPPORTED\n");
+            DBIngestor_error("Converter Error: CONV_3CONCAT does not handle the datatype - ONLY STRINGS SUPPORTED\n", NULL);
             break;
     }
     

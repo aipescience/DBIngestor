@@ -95,7 +95,7 @@ int DBODBCBulk::connect(string usr, string pwd, string host, string port, string
         printf("Error ODBC:\n");
         printf("%s\n", output);
         printODBCError("SQLDriverConnect", odbcDbc, SQL_HANDLE_DBC);
-        DBIngestor_error("DBODBCBulk: could not connect to ODBC database\n");
+        DBIngestor_error("DBODBCBulk: could not connect to ODBC database\n", NULL);
     }
     
     //check whether this ODBC driver supports bulk operations
@@ -103,7 +103,7 @@ int DBODBCBulk::connect(string usr, string pwd, string host, string port, string
     SQLGetInfo(odbcDbc, SQL_DYNAMIC_CURSOR_ATTRIBUTES1, (SQLPOINTER)&infoResult, sizeof(infoResult), NULL);
     if(!(infoResult & SQL_CA1_BULK_ADD)) {
         printf("Error ODBC:\n");
-        DBIngestor_error("DBODBCBulk: bulk operations not supported by this ODBC driver\n");
+        DBIngestor_error("DBODBCBulk: bulk operations not supported by this ODBC driver\n", NULL);
     }
     
     //read the database system
@@ -149,7 +149,7 @@ int DBODBCBulk::setSavepoint() {
         if(!SQL_SUCCEEDED(result)) {
             printf("Error ODBC:\n");
             printODBCError("SQLSetConnectAttr", odbcDbc, SQL_HANDLE_DBC);
-            DBIngestor_error("DBODBCBulk: could not set savepoint.\n");
+            DBIngestor_error("DBODBCBulk: could not set savepoint.\n", NULL);
         }
         
         SQLFreeHandle(SQL_HANDLE_STMT, stmt);
@@ -167,7 +167,7 @@ int DBODBCBulk::rollback() {
         if(!SQL_SUCCEEDED(result)) {
             printf("Error ODBC:\n");
             printODBCError("SQLEndTran", odbcDbc, SQL_HANDLE_DBC);
-            DBIngestor_error("DBODBCBulk: rollback not successfull.\n");
+            DBIngestor_error("DBODBCBulk: rollback not successfull.\n", NULL);
         }
         
         result = SQLSetConnectAttr(odbcDbc, SQL_ATTR_AUTOCOMMIT, (SQLUINTEGER*)SQL_AUTOCOMMIT_ON, sizeof(SQLUINTEGER));
@@ -175,7 +175,7 @@ int DBODBCBulk::rollback() {
         if(!SQL_SUCCEEDED(result)) {
             printf("Error ODBC:\n");
             printODBCError("SQLSetConnectAttr", odbcDbc, SQL_HANDLE_DBC);
-            DBIngestor_error("DBODBCBulk: could not reset to autocommit mode.\n");
+            DBIngestor_error("DBODBCBulk: could not reset to autocommit mode.\n", NULL);
         }
     }
     
@@ -191,7 +191,7 @@ int DBODBCBulk::releaseSavepoint() {
         if(!SQL_SUCCEEDED(result)) {
             printf("Error ODBC:\n");
             printODBCError("SQLEndTran", odbcDbc, SQL_HANDLE_DBC);
-            DBIngestor_error("DBODBCBulk: savepoint not realeased successfully.\n");
+            DBIngestor_error("DBODBCBulk: savepoint not realeased successfully.\n", NULL);
         }
         
         result = SQLSetConnectAttr(odbcDbc, SQL_ATTR_AUTOCOMMIT, (SQLUINTEGER*)SQL_AUTOCOMMIT_ON, sizeof(SQLUINTEGER));
@@ -199,7 +199,7 @@ int DBODBCBulk::releaseSavepoint() {
         if(!SQL_SUCCEEDED(result)) {
             printf("Error ODBC:\n");
             printODBCError("SQLSetConnectAttr", odbcDbc, SQL_HANDLE_DBC);
-            DBIngestor_error("DBODBCBulk: could not reset to autocommit mode.\n");
+            DBIngestor_error("DBODBCBulk: could not reset to autocommit mode.\n", NULL);
         }
     }
     
@@ -232,7 +232,7 @@ int DBODBCBulk::disableKeys(DBDataSchema::Schema * thisSchema) {
                 if(!SQL_SUCCEEDED(result2)) {
                     printf("Error ODBC:\n");
                     printODBCError("SQLExecDirect", stmt, SQL_HANDLE_STMT);
-                    DBIngestor_error("DBODBCBulk: could not disable keys.\n");
+                    DBIngestor_error("DBODBCBulk: could not disable keys.\n", NULL);
                 }
             }
         }
@@ -270,7 +270,7 @@ int DBODBCBulk::enableKeys(DBDataSchema::Schema * thisSchema) {
                 if(!SQL_SUCCEEDED(result2)) {
                     printf("Error ODBC:\n");
                     printODBCError("SQLExecDirect", stmt, SQL_HANDLE_STMT);
-                    DBIngestor_error("DBODBCBulk: could not reenable keys.\n");
+                    DBIngestor_error("DBODBCBulk: could not reenable keys.\n", NULL);
                 }
             }
         }
@@ -310,7 +310,7 @@ DBDataSchema::Schema * DBODBCBulk::getSchema(string database, string table) {
     if(count == 0) {
         printf("Error ODBC:\n");
         printODBCError("SQLTables", stmt, SQL_HANDLE_STMT);
-        DBIngestor_error("DBODBCBulk - getSchema: table not found");
+        DBIngestor_error("DBODBCBulk - getSchema: table not found", NULL);
     }
     
     retSchema->setDbName(database);
@@ -339,7 +339,7 @@ DBDataSchema::Schema * DBODBCBulk::getSchema(string database, string table) {
         if(!SQL_SUCCEEDED(result)) {
             printf("Error ODBC:\n");
             printODBCError("SQLGetData", stmt2, SQL_HANDLE_STMT);
-            DBIngestor_error("DBODBCBulk - getSchema: could not read column name");
+            DBIngestor_error("DBODBCBulk - getSchema: could not read column name", NULL);
         }            
         
         result = SQLGetData(stmt2, 5, SQL_SMALLINT, &typeResult, sizeof(typeResult), &ind);
@@ -347,7 +347,7 @@ DBDataSchema::Schema * DBODBCBulk::getSchema(string database, string table) {
         if(!SQL_SUCCEEDED(result)) {
             printf("Error ODBC:\n");
             printODBCError("SQLGetData", stmt2, SQL_HANDLE_STMT);
-            DBIngestor_error("DBODBCBulk - getSchema: could not read data type");
+            DBIngestor_error("DBODBCBulk - getSchema: could not read data type", NULL);
         }            
         
         result = SQLGetData(stmt2, 7, SQL_INTEGER, &columnSize, sizeof(columnSize), &ind);
@@ -355,7 +355,7 @@ DBDataSchema::Schema * DBODBCBulk::getSchema(string database, string table) {
         if(!SQL_SUCCEEDED(result)) {
             printf("Error ODBC:\n");
             printODBCError("SQLGetData", stmt2, SQL_HANDLE_STMT);
-            DBIngestor_error("DBODBCBulk - getSchema: could not read column size");
+            DBIngestor_error("DBODBCBulk - getSchema: could not read column size", NULL);
         }            
         
         result = SQLGetData(stmt2, 9, SQL_SMALLINT, &decimalDigits, sizeof(decimalDigits), &ind);
@@ -363,7 +363,7 @@ DBDataSchema::Schema * DBODBCBulk::getSchema(string database, string table) {
         if(!SQL_SUCCEEDED(result)) {
             printf("Error ODBC:\n");
             printODBCError("SQLGetData", stmt2, SQL_HANDLE_STMT);
-            DBIngestor_error("DBODBCBulk - getSchema: could not read data type");
+            DBIngestor_error("DBODBCBulk - getSchema: could not read data type", NULL);
         }            
         
         result = SQLGetData(stmt2, 11, SQL_SMALLINT, &notNull, sizeof(notNull), &ind);
@@ -371,7 +371,7 @@ DBDataSchema::Schema * DBODBCBulk::getSchema(string database, string table) {
         if(!SQL_SUCCEEDED(result)) {
             printf("Error ODBC:\n");
             printODBCError("SQLGetData", stmt2, SQL_HANDLE_STMT);
-            DBIngestor_error("DBODBC - getSchema: could not read data type");
+            DBIngestor_error("DBODBC - getSchema: could not read data type", NULL);
         }
 
         string colName(buffer);
@@ -400,7 +400,7 @@ void* DBODBCBulk::prepareIngestStatement(DBDataSchema::Schema * thisSchema) {
     
     if(stmt == NULL) {
         printf("DBODBCBulk: Error\n");
-        DBIngestor_error("DBODBCBulk - prepareMultiIngestStatement: error allocating ODBC statement.\n");
+        DBIngestor_error("DBODBCBulk - prepareMultiIngestStatement: error allocating ODBC statement.\n", NULL);
     }
     
     SQLRETURN result;
@@ -463,7 +463,7 @@ void* DBODBCBulk::prepareIngestStatement(DBDataSchema::Schema * thisSchema) {
         printf("Error ODBC:\n");
         printf("Statement: %s\n", query.c_str());
         printODBCError("SQLPrepare", *stmt, SQL_HANDLE_STMT);
-        DBIngestor_error("DBODBCBulk - prepareIngestStatement: could not prepare statement");
+        DBIngestor_error("DBODBCBulk - prepareIngestStatement: could not prepare statement", NULL);
     }            
     
     return (void*)stmtContainer;   
@@ -473,14 +473,14 @@ void* DBODBCBulk::prepareMultiIngestStatement(DBDataSchema::Schema * thisSchema,
     if(numElements > maxRowsPerStmt(thisSchema)) {
         printf("DBODBCBulk: Error\n");
         printf("max_prepared_stmt_count: %i\n", maxRowsPerStmt(thisSchema));
-        DBIngestor_error("DBODBCBulk - prepareMultiIngestStatement: max_prepared_stmt_count has been violated.\n");
+        DBIngestor_error("DBODBCBulk - prepareMultiIngestStatement: max_prepared_stmt_count has been violated.\n", NULL);
     }
     
     SQLHSTMT * stmt = (SQLHSTMT*)malloc(sizeof(SQLHSTMT));
     
     if(stmt == NULL) {
         printf("DBODBCBulk: Error\n");
-        DBIngestor_error("DBODBCBulk - prepareMultiIngestStatement: error allocating ODBC statement.\n");
+        DBIngestor_error("DBODBCBulk - prepareMultiIngestStatement: error allocating ODBC statement.\n", NULL);
     }
     
     SQLRETURN result;
@@ -544,7 +544,7 @@ void* DBODBCBulk::prepareMultiIngestStatement(DBDataSchema::Schema * thisSchema,
         printf("Error ODBC:\n");
         printf("Statement: %s\n", query.c_str());
         printODBCError("SQLPrepare", *stmt, SQL_HANDLE_STMT);
-        DBIngestor_error("DBODBCBulk - prepareMultiIngestStatement: could not setup bulk statement");
+        DBIngestor_error("DBODBCBulk - prepareMultiIngestStatement: could not setup bulk statement", NULL);
     }
     
     bindStatement(stmtContainer);
@@ -566,7 +566,7 @@ int DBODBCBulk::insertOneRow(DBDataSchema::Schema * thisSchema, void** thisData)
     query = buildOneRowInsertString(thisSchema, thisData, DBTYPE_ODBC_MSSQL);
     
     if(query.size() == 0) {
-        DBIngestor_error("DBODBCBulk - insertOneRow: an error occured in insertOneRow in switch while binding\n");
+        DBIngestor_error("DBODBCBulk - insertOneRow: an error occured in insertOneRow in switch while binding\n", NULL);
     }
     
     result = SQLExecDirect(stmt, (SQLCHAR*)query.c_str(), (SQLINTEGER)strlen(query.c_str()));
@@ -575,7 +575,7 @@ int DBODBCBulk::insertOneRow(DBDataSchema::Schema * thisSchema, void** thisData)
         printf("DBODBCBulk: Error\n");
         printf("Statement: %s\n", query.c_str());
         printODBCError("SQLExecDirect", stmt, SQL_HANDLE_STMT);
-        DBIngestor_error("DBODBCBulk - insertOneRow without prepared statement: an error occured in the ingest.\n");
+        DBIngestor_error("DBODBCBulk - insertOneRow without prepared statement: an error occured in the ingest.\n", NULL);
     }
     
     return 1;    
@@ -648,13 +648,13 @@ int DBODBCBulk::bindStatement(void* preparedStatement) {
                                     sizeof(SQLDOUBLE), NULL);
             default:
                 printf("Type: %i\n", prepStmt->type[i]);
-                DBIngestor_error("DBODBCBulk - bindStatement: an error occured in bindStatement in switch while binding\n");
+                DBIngestor_error("DBODBCBulk - bindStatement: an error occured in bindStatement in switch while binding\n", NULL);
         }
         
         if(!SQL_SUCCEEDED(result)) {
             printf("Error ODBC:\n");
             printODBCError("SQLBindCol", *statement, SQL_HANDLE_STMT);
-            DBIngestor_error("DBODBCBulk - bindStatement: error in bindStatement");
+            DBIngestor_error("DBODBCBulk - bindStatement: error in bindStatement", NULL);
         }
     }
     
@@ -714,7 +714,7 @@ int DBODBCBulk::bindOneRowToStmt(DBDataSchema::Schema * thisSchema, void* thisDa
                 arr[nInStmt] = (SQLDOUBLE)(*(double*)(currRow+byteCount));    
                 byteCount += sizeof(double);}
             default:
-                DBIngestor_error("DBODBCBulk - bindOneRowToStmt: an error occured in bindOneRowToStmt in switch while binding\n");
+                DBIngestor_error("DBODBCBulk - bindOneRowToStmt: an error occured in bindOneRowToStmt in switch while binding\n", NULL);
         }
     }
     
@@ -742,7 +742,7 @@ int DBODBCBulk::executeStmt(void* preparedStatement) {
     if(!SQL_SUCCEEDED(result)) {
         printf("DBODBCBulk: Error\n");
         printODBCError("SQLExecute", *statement, SQL_HANDLE_STMT);
-        DBIngestor_error("DBODBCBulk - executeStmt: could not execute statement.\n");
+        DBIngestor_error("DBODBCBulk - executeStmt: could not execute statement.\n", NULL);
     }
     
     return 1;
@@ -797,7 +797,7 @@ DBDataSchema::DBType DBODBCBulk::getType(SQLSMALLINT thisTypeID) {
         default:
             printf("Error ODBC:\n");
             printf("Err in ODBC type number: %i\n", thisTypeID);
-            DBIngestor_error("DBODBCBulk: this type used in the table is not yet supported. Please implement support...\n");
+            DBIngestor_error("DBODBCBulk: this type used in the table is not yet supported. Please implement support...\n", NULL);
             return (DBDataSchema::DBType)0;
     }
 }
@@ -832,7 +832,7 @@ void * DBODBCBulk::allocPrepStmt(int numItems) {
     stmtContainer->parLenArray = (SQLLEN*)malloc(numItems * sizeof(SQLLEN));
     memset(stmtContainer->parLenArray, 0, numItems * sizeof(SQLLEN));
     stmtContainer->buffer = (void**)malloc(numItems * sizeof(void*));
-    memset(stmtContainer->buffer, NULL, numItems * sizeof(void*));
+    memset(stmtContainer->buffer, 0, numItems * sizeof(void*));
     stmtContainer->colSize = (SQLULEN*)malloc(numItems * sizeof(SQLULEN));
     memset(stmtContainer->colSize, 0, numItems * sizeof(SQLULEN));
     stmtContainer->decDigits = (SQLINTEGER*)malloc(numItems * sizeof(SQLINTEGER));
@@ -841,7 +841,7 @@ void * DBODBCBulk::allocPrepStmt(int numItems) {
     
     if(stmtContainer->type == NULL || stmtContainer->parLenArray == NULL || stmtContainer->buffer == NULL) {
         printf("Error ODBC:\n");
-        DBIngestor_error("DBODBCBulk - allocPrepStmt: could not allocate statement");
+        DBIngestor_error("DBODBCBulk - allocPrepStmt: could not allocate statement", NULL);
     }       
     
     return (void*)stmtContainer;
@@ -887,7 +887,7 @@ void * DBODBCBulk::allocBulkPrepStmt(int numItems, DBDataSchema::Schema * thisSc
     stmtContainer->parLenArray = (SQLLEN*)malloc(numCols * sizeof(SQLLEN));
     memset(stmtContainer->parLenArray, 0, numCols * sizeof(SQLLEN));
     stmtContainer->buffer = (void**)malloc(numCols * sizeof(void*));
-    memset(stmtContainer->buffer, NULL, numCols * sizeof(void*));
+    memset(stmtContainer->buffer, 0, numCols * sizeof(void*));
     stmtContainer->colSize = (SQLULEN*)malloc(numCols * sizeof(SQLULEN));
     memset(stmtContainer->colSize, 0, numCols * sizeof(SQLULEN));
     stmtContainer->decDigits = (SQLINTEGER*)malloc(numCols * sizeof(SQLINTEGER));
@@ -898,7 +898,7 @@ void * DBODBCBulk::allocBulkPrepStmt(int numItems, DBDataSchema::Schema * thisSc
     if(stmtContainer->type == NULL || stmtContainer->parLenArray == NULL || 
        stmtContainer->buffer == NULL || stmtContainer->rowStatus == NULL) {
         printf("Error ODBC:\n");
-        DBIngestor_error("DBODBCBulk - allocPrepStmtBulk: could not allocate statement");
+        DBIngestor_error("DBODBCBulk - allocPrepStmtBulk: could not allocate statement", NULL);
     }       
     
     //allocate numItems memory to hold data
@@ -932,12 +932,12 @@ void * DBODBCBulk::allocBulkPrepStmt(int numItems, DBDataSchema::Schema * thisSc
                 break;
             default:
                 printf("Error ODBC:\n");
-                DBIngestor_error("DBODBCBulk - allocPrepStmt: CHAR, ANY, DATE and TIME are not supported by the ODBCBulkIngestor");
+                DBIngestor_error("DBODBCBulk - allocPrepStmt: CHAR, ANY, DATE and TIME are not supported by the ODBCBulkIngestor", NULL);
         }
         
         if(stmtContainer->buffer[i] == NULL) {
             printf("Error ODBC:\n");
-            DBIngestor_error("DBODBCBulk - allocPrepStmtBulk: could not allocate bulk buffer");
+            DBIngestor_error("DBODBCBulk - allocPrepStmtBulk: could not allocate bulk buffer", NULL);
         }
     }
     

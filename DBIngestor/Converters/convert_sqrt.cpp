@@ -56,7 +56,7 @@ bool convert_sqrt::execute(DBDataSchema::DType thisDType, void* value) {
         str = (char*) malloc(1000 * sizeof(char));
         sprintf(str,"ERROR: Negative values not allowed in CONV_SQRT! Offending value is %f\n", 
             val);
-        DBIngestor_error(str);
+        DBIngestor_error(str, NULL);
         return 0;
     }
     
@@ -113,7 +113,7 @@ bool convert_sqrt::execute(DBDataSchema::DType thisDType, void* value) {
             break;
             
         default:
-            DBIngestor_error("Converter Error: CONV_SQRT does not handle this datatype - ONLY INTS, FLOAT AND DOUBLE SUPPORTED\n");
+            DBIngestor_error("Converter Error: CONV_SQRT does not handle this datatype - ONLY INTS, FLOAT AND DOUBLE SUPPORTED\n", NULL);
             break;
     }
     

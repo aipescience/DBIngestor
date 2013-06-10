@@ -133,7 +133,7 @@ bool assert_isnegative::execute(DBDataSchema::DType thisDType, void* value) {
             break;
 
         default:
-            DBIngestor_error("Asserter Error: ASRT_ISNEGATIVE does not handle the datatype - ONLY INT1,2,4,8, FLOAT AND DOUBLE SUPPORTED\n");
+            DBIngestor_error("Asserter Error: ASRT_ISNEGATIVE does not handle the datatype - ONLY INT1,2,4,8, FLOAT AND DOUBLE SUPPORTED\n", NULL);
             break;
     }
     

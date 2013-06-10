@@ -153,7 +153,7 @@ DType DBDataSchema::convDType(std::string thisDType) {
         return DT_REAL8;
     }
     
-    DBIngestor_error("DType convDType: Type not known...");
+    DBIngestor_error("DType convDType: Type not known...", NULL);
     return (DType)0;    
 }
 
@@ -200,7 +200,7 @@ int DBDataSchema::castStringToDType(std::string & thisString, DType thisType, vo
             isNull = convToReal8(thisString, result);
             break;
         default:
-            DBIngestor_error("castStringToDType: DType not known, I don't know what to do.");
+            DBIngestor_error("castStringToDType: DType not known, I don't know what to do.", NULL);
             break;
     }
     
@@ -657,7 +657,7 @@ char * DBDataSchema::castToString(DType thisType, void* value) {
     char * buffer;
     buffer = (char*) malloc(STRING_BUFF_SIZE * sizeof(char));
     if(buffer == NULL) {
-        DBIngestor_error("castToString: No memory left to cast into.");
+        DBIngestor_error("castToString: No memory left to cast into.", NULL);
     }
 
     switch (thisType) {
@@ -694,7 +694,7 @@ char * DBDataSchema::castToString(DType thisType, void* value) {
         case DT_STRING:
             buffer = (char*) realloc(buffer, (strlen(*(char**) value) + 1) * sizeof(char));
             if(buffer == NULL)
-                DBIngestor_error("castToString: No memory left to cast into.");
+                DBIngestor_error("castToString: No memory left to cast into.", NULL);
             strncpy(buffer, *(char**)value, strlen(*(char**) value));
             buffer[strlen(*(char**) value)] = '\0';
             break;

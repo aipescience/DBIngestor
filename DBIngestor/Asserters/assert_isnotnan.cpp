@@ -69,7 +69,7 @@ bool assert_isnotnan::execute(DBDataSchema::DType thisDType, void* value) {
             break;
 
         default:
-            DBIngestor_error("Asserter Error: ASRT_ISNOTNAN does not handle the datatype - ONLY FLOAT AND DOUBLE SUPPORTED\n");
+            DBIngestor_error("Asserter Error: ASRT_ISNOTNAN does not handle the datatype - ONLY FLOAT AND DOUBLE SUPPORTED\n", NULL);
             break;
     }
     
