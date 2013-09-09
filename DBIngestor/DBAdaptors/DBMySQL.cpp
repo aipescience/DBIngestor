@@ -202,10 +202,11 @@ DBDataSchema::Schema * DBMySQL::getSchema(string database, string table) {
         //parse for type
         newItem->setColumnDBType(getType(row[1]));
         
+        //isNull column: NO = isNotNull, YES = isNull
         if(row[2][0] == 'N') {
-            newItem->setIsNotNull(false);
-        } else {
             newItem->setIsNotNull(true);
+        } else {
+            newItem->setIsNotNull(false);
         }
         
         //newItem->setDataDesc(NULL);
