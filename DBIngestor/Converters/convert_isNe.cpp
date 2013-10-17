@@ -28,10 +28,10 @@ using namespace std;
 
 convert_isne::convert_isne() {
     string converterName = "CONV_ISNE";
-    int sizeTypeArray = 10;
-    DType typeArray[10] = {DT_INT1, DT_INT2, DT_INT4, DT_INT8, DT_UINT1, DT_UINT2, DT_UINT4, DT_UINT8, DT_REAL4, DT_REAL8};
+    int sizeTypeArray = 11;
+    DType typeArray[11] = {DT_STRING, DT_INT1, DT_INT2, DT_INT4, DT_INT8, DT_UINT1, DT_UINT2, DT_UINT4, DT_UINT8, DT_REAL4, DT_REAL8};
     int numParameters = 2;
-    DType funcParTypes[10] = {DT_INT1, DT_INT2, DT_INT4, DT_INT8, DT_UINT1, DT_UINT2, DT_UINT4, DT_UINT8, DT_REAL4, DT_REAL8};
+    DType funcParTypes[11] = {DT_STRING, DT_INT1, DT_INT2, DT_INT4, DT_INT8, DT_UINT1, DT_UINT2, DT_UINT4, DT_UINT8, DT_REAL4, DT_REAL8};
     convFunctionParam parameters[2] = { { 0, 10, funcParTypes }, { 1, 10, funcParTypes } };
     
     setName(converterName);
@@ -52,6 +52,10 @@ bool convert_isne::execute(DBDataSchema::DType thisDType, void* value) {
     
 	//apply isne to the value
     switch (thisDType) {
+        case DBDataSchema::DT_STRING:
+            *(int8_t*)value = strcmp(castToString(currFuncInstanceDTypes[0], functionValues[0]), castToString(currFuncInstanceDTypes[1], functionValues[1])) == 0 ? 0 : 1;
+            return 1;
+            break;
         case DBDataSchema::DT_INT1:
             *(int8_t*)value = castToInt1(currFuncInstanceDTypes[0], functionValues[0]) != castToInt1(currFuncInstanceDTypes[1], functionValues[1]) ? 1 : 0;
             return 1;
