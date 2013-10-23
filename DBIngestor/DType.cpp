@@ -707,7 +707,7 @@ char * DBDataSchema::castToString(DType thisType, void* value) {
 
 int convToInt1(std::string & thisString, void* result) {
     int32_t tmp;
-    tmp = strtol(thisString.c_str(), NULL, 0);
+    tmp = strtol(thisString.c_str(), NULL, 10);
     
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
@@ -724,7 +724,7 @@ int convToInt1(std::string & thisString, void* result) {
 
 int convToInt2(std::string & thisString, void* result) {
     int32_t tmp;
-    tmp = strtol(thisString.c_str(), NULL, 0);
+    tmp = strtol(thisString.c_str(), NULL, 10);
     
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
@@ -740,7 +740,7 @@ int convToInt2(std::string & thisString, void* result) {
 }
 
 int convToInt4(std::string & thisString, void* result) {
-    *(int32_t*)result = strtol(thisString.c_str(), NULL, 0);
+    *(int32_t*)result = strtol(thisString.c_str(), NULL, 10);
 
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
@@ -755,9 +755,9 @@ int convToInt4(std::string & thisString, void* result) {
 
 int convToInt8(std::string & thisString, void* result) {
 #ifdef _WIN32
-    *(int64_t*)result = _strtoi64(thisString.c_str(), NULL, 0);
+    *(int64_t*)result = _strtoi64(thisString.c_str(), NULL, 10);
 #else
-    *(int64_t*)result = strtoll(thisString.c_str(), NULL, 0);
+    *(int64_t*)result = strtoll(thisString.c_str(), NULL, 10);
 #endif
 
     //check if this could be a candiate for a NULL
@@ -773,7 +773,7 @@ int convToInt8(std::string & thisString, void* result) {
 
 int convToUInt1(std::string & thisString, void* result) {
     int32_t tmp;
-    tmp = strtol(thisString.c_str(), NULL, 0);
+    tmp = strtol(thisString.c_str(), NULL, 10);
 
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 
@@ -790,7 +790,7 @@ int convToUInt1(std::string & thisString, void* result) {
 
 int convToUInt2(std::string & thisString, void* result) {
     int32_t tmp;
-    tmp = strtol(thisString.c_str(), NULL, 0);
+    tmp = strtol(thisString.c_str(), NULL, 10);
     
     //check if this could be a candiate for a NULL
     //strol returns 0 if there was a character in there 

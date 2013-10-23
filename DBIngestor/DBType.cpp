@@ -345,9 +345,9 @@ void convToBigint(void* value, DType thisDType, void* result) {
     switch (thisDType) {
         case DT_STRING: {
 #ifdef _WIN32
-            *(int64_t*)result = _strtoi64((char*)value, NULL, 0);
+            *(int64_t*)result = _strtoi64((char*)value, NULL, 10);
 #else
-            *(int64_t*)result = strtoll((char*)value, NULL, 0);
+            *(int64_t*)result = strtoll((char*)value, NULL, 10);
 #endif
             break;}
         case DT_INT1: 
@@ -388,7 +388,7 @@ void convToBigint(void* value, DType thisDType, void* result) {
 void convToInt(void* value, DType thisDType, void* result) {
     switch (thisDType) {
         case DT_STRING: 
-            *(int32_t*)result = strtol((char*) value, NULL, 0);
+            *(int32_t*)result = strtol((char*) value, NULL, 10);
             break;
         case DT_INT1: 
             *(int32_t*) result = (int32_t)*(int8_t*)value;
@@ -511,9 +511,9 @@ void convToUBigint(void* value, DType thisDType, void* result) {
     switch (thisDType) {
         case DT_STRING:
 #ifdef _WIN32
-            *(uint64_t*)result = _strtoui64((char*)value, NULL, 0);
+            *(uint64_t*)result = _strtoui64((char*)value, NULL, 10);
 #else
-            *(uint64_t*)result = strtoull((char*)value, NULL, 0);
+            *(uint64_t*)result = strtoull((char*)value, NULL, 10);
 #endif
             break;
         case DT_INT1: 
@@ -554,7 +554,7 @@ void convToUBigint(void* value, DType thisDType, void* result) {
 void convToUInt(void* value, DType thisDType, void* result) {
     switch (thisDType) {
         case DT_STRING: 
-            *(uint32_t*)result = strtoul((char*) value, NULL, 0);
+            *(uint32_t*)result = strtoul((char*) value, NULL, 10);
             break;
         case DT_INT1: 
             *(uint32_t*) result = (uint32_t)*(int8_t*)value;
