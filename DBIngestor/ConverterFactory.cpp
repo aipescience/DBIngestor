@@ -44,6 +44,8 @@
 #include "Converters/convert_sqrt.h"
 #include "Converters/convert_power.h"
 #include "Converters/convert_periodicBound.h"
+#include "Converters/convert_set.h"
+#include "Converters/convert_postset.h"
 
 using namespace DBConverter;
 using namespace std;
@@ -67,6 +69,8 @@ ConverterFactory::ConverterFactory() {
     registerConvert<convert_sqrt>();
     registerConvert<convert_power>();
     registerConvert<convert_periodicbound>();
+    registerConvert<convert_set>();
+    registerConvert<convert_postset>();
 }
 
 ConverterFactory::~ConverterFactory() {

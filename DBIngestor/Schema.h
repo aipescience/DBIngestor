@@ -86,6 +86,8 @@ namespace DBDataSchema {
         int64_t getRowSizeInBytes();
         
         void printSchema();
+
+        void prepareSchemaForNextRow();
 	};
 }
 

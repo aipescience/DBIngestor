@@ -118,5 +118,11 @@ void Schema::printSchema() {
     }
 }
 
+void Schema::prepareSchemaForNextRow() {
+    for(int j=0; j<getArrSchemaItems().size(); j++) {
+        DBDataSchema::SchemaItem * currObj = getArrSchemaItems().at(j);
+        currObj->getDataDesc()->resetForNextRow();
+    }
+}
 
 

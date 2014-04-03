@@ -103,6 +103,18 @@ namespace DBDataSchema {
          */
         std::vector<DBAsserter::Asserter*> assertions;
 
+        /* \var bool conversionsEvaluated
+         true if conversions have already been evaluated for this item in current row
+         false if not
+         */
+        bool conversionEvaluated;
+
+        /* \var bool assertionsEvaluated
+         true if assertions have already been evaluated for this item in current row
+         false if not
+         */
+        bool assertionsEvaluated;
+
 	public:
         DataObjDesc();
         
@@ -147,6 +159,16 @@ namespace DBDataSchema {
 		DType getDataObjDType();
 	
 		void setDataObjDType(DType newDataObjDType);
+
+        bool getConversionEvaluated();
+
+        bool setConversionEvaluated(bool value);
+
+        bool getAssertionEvaluated();
+
+        bool setAssertionEvaluated(bool value);
+
+        bool resetForNextRow();
 	};
 }
 

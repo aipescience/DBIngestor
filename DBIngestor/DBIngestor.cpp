@@ -202,6 +202,8 @@ int DBIngestor::ingestData(int lenBuffer) {
     printf("Starting ingest...\n");
     
     while(myReader->getNextRow()) {
+        myDBSchema->prepareSchemaForNextRow();
+        
         ingestBuff->newRow();
         
         for(int i=0; i<myDBSchema->getArrSchemaItems().size(); i++) {

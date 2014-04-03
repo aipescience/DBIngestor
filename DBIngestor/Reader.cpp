@@ -69,6 +69,11 @@ void Reader::setSchema(DBDataSchema::Schema * newSchema) {
 }
 
 void Reader::checkAssertions(DBDataSchema::DataObjDesc * thisItem, void* result) {
+    //checking this assertion only once per row, is it alreads evaluated?
+    if(thisItem->getAssertionEvaluated() == true) {
+        return;
+    }
+
     for(int i=0; i<thisItem->getNumAssertions(); i++) {
         DBAsserter::Asserter * currAsserter = thisItem->getAssertion(i);
         if(currAsserter->execute(thisItem->getDataObjDType(), result) == 0) {
@@ -78,10 +83,17 @@ void Reader::checkAssertions(DBDataSchema::DataObjDesc * thisItem, void* result)
             DBIngestor_error("DBIngestor: Error in assertion. Assertion failed.\n", this);
         }
     }
+
+    thisItem->setAssertionEvaluated(true);
 }
 
 bool Reader::applyConversions(DBDataSchema::DataObjDesc * thisItem, void* result)  {
     int err;
+
+    //checking this assertion only once per row, is it alreads evaluated?
+    if(thisItem->getConversionEvaluated() == true) {
+        return;
+    }
     
     for(int i=0; i<thisItem->getNumConverters(); i++) {
         DBConverter::Converter * currConverter = thisItem->getConversion(i);
@@ -109,6 +121,8 @@ bool Reader::applyConversions(DBDataSchema::DataObjDesc * thisItem, void* result
             return true;
         }
     }
+
+    thisItem->setConversionEvaluated(true);
     
     return false;
 }

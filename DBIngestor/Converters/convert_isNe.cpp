@@ -32,7 +32,7 @@ convert_isne::convert_isne() {
     DType typeArray[11] = {DT_STRING, DT_INT1, DT_INT2, DT_INT4, DT_INT8, DT_UINT1, DT_UINT2, DT_UINT4, DT_UINT8, DT_REAL4, DT_REAL8};
     int numParameters = 2;
     DType funcParTypes[11] = {DT_STRING, DT_INT1, DT_INT2, DT_INT4, DT_INT8, DT_UINT1, DT_UINT2, DT_UINT4, DT_UINT8, DT_REAL4, DT_REAL8};
-    convFunctionParam parameters[2] = { { 0, 10, funcParTypes }, { 1, 10, funcParTypes } };
+    convFunctionParam parameters[2] = { { 0, 11, funcParTypes }, { 1, 11, funcParTypes } };
     
     setName(converterName);
     setDTypeArray(typeArray, sizeTypeArray);
@@ -53,7 +53,17 @@ bool convert_isne::execute(DBDataSchema::DType thisDType, void* value) {
 	//apply isne to the value
     switch (thisDType) {
         case DBDataSchema::DT_STRING:
-            *(int8_t*)value = strcmp(castToString(currFuncInstanceDTypes[0], functionValues[0]), castToString(currFuncInstanceDTypes[1], functionValues[1])) == 0 ? 0 : 1;
+            char * buffer1 = castToString(currFuncInstanceDTypes[0], functionValues[0]);
+            char * buffer2 = castToString(currFuncInstanceDTypes[1], functionValues[1]);
+            char * returnBuffer = (char*) malloc(1 + 1);
+            if(returnBuffer == NULL)
+                DBIngestor_error("Converter Error: Could not allocate memory in CONV_ISNE\n", NULL);
+
+            returnBuffer[0] = strcmp(buffer1, buffer2) != 0 ? '1' : '0';
+            returnBuffer[1] = '\0';
+            *(char**)value = returnBuffer;
+            free(buffer1);
+            free(buffer2);
             return 1;
             break;
         case DBDataSchema::DT_INT1:

@@ -30,6 +30,8 @@ DataObjDesc::DataObjDesc() {
     isConstData = 0;
     isHeaderItem = 0;
     constData = NULL;
+    conversionEvaluated = false;
+    assertionsEvaluated = false;
 }
 
 DataObjDesc::~DataObjDesc() {
@@ -141,3 +143,26 @@ void DataObjDesc::setDataObjDType(DType newDataObjDType) {
     
     dataObjDType = newDataObjDType;
 }
+
+bool DataObjDesc::getConversionEvaluated() {
+    return conversionEvaluated;
+}
+
+bool DataObjDesc::setConversionEvaluated(bool value) {
+    conversionEvaluated = value;
+}
+
+bool DataObjDesc::getAssertionEvaluated() {
+    return assertionsEvaluated;
+}
+
+bool DataObjDesc::setAssertionEvaluated(bool value) {
+    assertionsEvaluated = value;
+}
+
+bool DataObjDesc::resetForNextRow() {
+    conversionEvaluated = false;
+    assertionsEvaluated = false;
+}
+
+

@@ -1,5 +1,6 @@
 /*  
  *  Copyright (c) 2012, Adrian M. Partl <apartl@aip.de>, 
+ *			            Kristin Riebe <kriebe@aip.de>
  *                      eScience team AIP Potsdam
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,107 +20,103 @@
 
 #include "dbingestor_error.h"
 #include <assert.h>
-#include "convert_isEq.h"
+#include "convert_set.h"
 #include <math.h>
-#include <string.h>
+#include <stdio.h> // sprintf
+#include <stdlib.h> // malloc
 
 using namespace DBConverter;
 using namespace DBDataSchema;
 using namespace std;
 
-convert_iseq::convert_iseq() {
-    string converterName = "CONV_ISEQ";
+convert_set::convert_set() {
+    string converterName = "CONV_SET";
     int sizeTypeArray = 11;
     DType typeArray[11] = {DT_STRING, DT_INT1, DT_INT2, DT_INT4, DT_INT8, DT_UINT1, DT_UINT2, DT_UINT4, DT_UINT8, DT_REAL4, DT_REAL8};
-    int numParameters = 2;
+    int numParameters = 1;
     DType funcParTypes[11] = {DT_STRING, DT_INT1, DT_INT2, DT_INT4, DT_INT8, DT_UINT1, DT_UINT2, DT_UINT4, DT_UINT8, DT_REAL4, DT_REAL8};
-    convFunctionParam parameters[2] = { { 0, 11, funcParTypes }, { 1, 11, funcParTypes } };
-    
+    convFunctionParam parameters[1] = { { 0, 11, funcParTypes } };
+   
     setName(converterName);
     setDTypeArray(typeArray, sizeTypeArray);
     setFunctionParameters(parameters, numParameters);
 }
 
-convert_iseq::~convert_iseq() {
-    
+convert_set::~convert_set() {
 }
 
-Converter * convert_iseq::clone() {
-    return new convert_iseq;
+Converter * convert_set::clone() {
+    return new convert_set;
 }
 
-bool convert_iseq::execute(DBDataSchema::DType thisDType, void* value) {
+bool convert_set::execute(DBDataSchema::DType thisDType, void* value) {
+
     assert(value != NULL);
     
-	//apply iseq to the value
+    //apply set to the function value
     switch (thisDType) {
         case DBDataSchema::DT_STRING:
             char * buffer1 = castToString(currFuncInstanceDTypes[0], functionValues[0]);
-            char * buffer2 = castToString(currFuncInstanceDTypes[1], functionValues[1]);
-            char * returnBuffer = (char*) malloc(1 + 1);
+            char * returnBuffer = (char*) malloc(sizeof(buffer1) + 1);
             if(returnBuffer == NULL)
-                DBIngestor_error("Converter Error: Could not allocate memory in CONV_ISEQ\n", NULL);
+                DBIngestor_error("Converter Error: Could not allocate memory in CONV_SET\n", NULL);
 
-            returnBuffer[0] = strcmp(buffer1, buffer2) == 0 ? '1' : '0';
-            returnBuffer[1] = '\0';
+            strcpy((char*)returnBuffer, buffer1);
             *(char**)value = returnBuffer;
             free(buffer1);
-            free(buffer2);
             return 1;
             break;
         case DBDataSchema::DT_INT1:
-            *(int8_t*)value = castToInt1(currFuncInstanceDTypes[0], functionValues[0]) == castToInt1(currFuncInstanceDTypes[1], functionValues[1]) ? 1 : 0;
+            *(int8_t*)value = castToInt1(currFuncInstanceDTypes[0], functionValues[0]);
             return 1;
             break;
             
         case DBDataSchema::DT_INT2:
-            *(int16_t*)value = castToInt2(currFuncInstanceDTypes[0], functionValues[0]) == castToInt2(currFuncInstanceDTypes[1], functionValues[1]) ? 1 : 0;
+            *(int16_t*)value = castToInt2(currFuncInstanceDTypes[0], functionValues[0]);
             return 1;
             break;
             
         case DBDataSchema::DT_INT4:
-            *(int32_t*)value = castToInt4(currFuncInstanceDTypes[0], functionValues[0]) == castToInt4(currFuncInstanceDTypes[1], functionValues[1]) ? 1 : 0;
+            *(int32_t*)value = castToInt4(currFuncInstanceDTypes[0], functionValues[0]);
             return 1;
             break;
             
         case DBDataSchema::DT_INT8:
-            *(int64_t*)value = castToInt8(currFuncInstanceDTypes[0], functionValues[0]) == castToInt8(currFuncInstanceDTypes[1], functionValues[1]) ? 1 : 0;
+            *(int64_t*)value = castToInt8(currFuncInstanceDTypes[0], functionValues[0]);
             return 1;
             break;
             
         case DBDataSchema::DT_UINT1:
-            *(int8_t*)value = castToUInt1(currFuncInstanceDTypes[0], functionValues[0]) == castToUInt1(currFuncInstanceDTypes[1], functionValues[1]) ? 1 : 0;
+            *(int8_t*)value = castToUInt1(currFuncInstanceDTypes[0], functionValues[0]);
             return 1;
             break;
             
         case DBDataSchema::DT_UINT2:
-            *(int16_t*)value = castToUInt2(currFuncInstanceDTypes[0], functionValues[0]) == castToUInt2(currFuncInstanceDTypes[1], functionValues[1]) ? 1 : 0;
+            *(int16_t*)value = castToUInt2(currFuncInstanceDTypes[0], functionValues[0]);
             return 1;
             break;
             
         case DBDataSchema::DT_UINT4:
-            *(int32_t*)value = castToUInt4(currFuncInstanceDTypes[0], functionValues[0]) == castToUInt4(currFuncInstanceDTypes[1], functionValues[1]) ? 1 : 0;
+            *(int32_t*)value = castToUInt4(currFuncInstanceDTypes[0], functionValues[0]);
             return 1;
             break;
             
         case DBDataSchema::DT_UINT8:
-            *(int64_t*)value = castToUInt8(currFuncInstanceDTypes[0], functionValues[0]) == castToUInt8(currFuncInstanceDTypes[1], functionValues[1]) ? 1 : 0;
+            *(int64_t*)value = castToUInt8(currFuncInstanceDTypes[0], functionValues[0]);
             return 1;
             break;
             
         case DBDataSchema::DT_REAL4:
-            *(float*)value = castToFloat(currFuncInstanceDTypes[0], functionValues[0]) == castToFloat(currFuncInstanceDTypes[1], functionValues[1]) ? 1 : 0;
+            *(float*)value = castToFloat(currFuncInstanceDTypes[0], functionValues[0]);
             return 1;
             break;
             
         case DBDataSchema::DT_REAL8:
-            *(double*)value = castToDouble(currFuncInstanceDTypes[0], functionValues[0]) == castToDouble(currFuncInstanceDTypes[1], functionValues[1]) ? 1 : 0;
+            *(double*)value = castToDouble(currFuncInstanceDTypes[0], functionValues[0]);
             return 1;
-            break;
-
-
+            break;            
         default:
-            DBIngestor_error("Converter Error: CONV_iseq does not handle the datatype - ONLY INTS, FLOAT AND DOUBLE SUPPORTED\n", NULL);
+            DBIngestor_error("Converter Error: CONV_SET does not handle this datatype - ONLY STRING, INTS, FLOAT AND DOUBLE SUPPORTED\n", NULL);
             break;
     }
     
