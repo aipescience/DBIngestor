@@ -53,52 +53,52 @@ bool convert_ifthen::execute(DBDataSchema::DType thisDType, void* value) {
 	//apply ifthenelse to the value
     switch (thisDType) {
         case DBDataSchema::DT_INT1:
-            *(int8_t*)value = castToInt1(currFuncInstanceDTypes[0], functionValues[0]) ? castToInt1(currFuncInstanceDTypes[1], functionValues[1]) : value;
+            *(int8_t*)value = castToInt1(currFuncInstanceDTypes[0], functionValues[0]) ? castToInt1(currFuncInstanceDTypes[1], functionValues[1]) : *(int8_t*)value;
             return 1;
             break;
             
         case DBDataSchema::DT_INT2:
-            *(int16_t*)value = castToInt2(currFuncInstanceDTypes[0], functionValues[0]) ? castToInt2(currFuncInstanceDTypes[1], functionValues[1]) : value;
+            *(int16_t*)value = castToInt2(currFuncInstanceDTypes[0], functionValues[0]) ? castToInt2(currFuncInstanceDTypes[1], functionValues[1]) : *(int16_t*)value;
             return 1;
             break;
             
         case DBDataSchema::DT_INT4:
-            *(int32_t*)value = castToInt4(currFuncInstanceDTypes[0], functionValues[0]) ? castToInt4(currFuncInstanceDTypes[1], functionValues[1]) : value;
+            *(int32_t*)value = castToInt4(currFuncInstanceDTypes[0], functionValues[0]) ? castToInt4(currFuncInstanceDTypes[1], functionValues[1]) : *(int32_t*)value;
             return 1;
             break;
             
         case DBDataSchema::DT_INT8:
-            *(int64_t*)value = castToInt8(currFuncInstanceDTypes[0], functionValues[0]) ? castToInt8(currFuncInstanceDTypes[1], functionValues[1]) : value;
+            *(int64_t*)value = castToInt8(currFuncInstanceDTypes[0], functionValues[0]) ? castToInt8(currFuncInstanceDTypes[1], functionValues[1]) : *(int64_t*)value;
             return 1;
             break;
             
         case DBDataSchema::DT_UINT1:
-            *(int8_t*)value = castToUInt1(currFuncInstanceDTypes[0], functionValues[0]) ? castToUInt1(currFuncInstanceDTypes[1], functionValues[1]) : value;
+            *(int8_t*)value = castToUInt1(currFuncInstanceDTypes[0], functionValues[0]) ? castToUInt1(currFuncInstanceDTypes[1], functionValues[1]) : *(int8_t*)value;
             return 1;
             break;
             
         case DBDataSchema::DT_UINT2:
-            *(int16_t*)value = castToUInt2(currFuncInstanceDTypes[0], functionValues[0]) ? castToUInt2(currFuncInstanceDTypes[1], functionValues[1]) : value;
+            *(int16_t*)value = castToUInt2(currFuncInstanceDTypes[0], functionValues[0]) ? castToUInt2(currFuncInstanceDTypes[1], functionValues[1]) : *(int16_t*)value;
             return 1;
             break;
             
         case DBDataSchema::DT_UINT4:
-            *(int32_t*)value = castToUInt4(currFuncInstanceDTypes[0], functionValues[0]) ? castToUInt4(currFuncInstanceDTypes[1], functionValues[1]) : value;
+            *(int32_t*)value = castToUInt4(currFuncInstanceDTypes[0], functionValues[0]) ? castToUInt4(currFuncInstanceDTypes[1], functionValues[1]) : *(int32_t*)value;
             return 1;
             break;
             
         case DBDataSchema::DT_UINT8:
-            *(int64_t*)value = castToUInt8(currFuncInstanceDTypes[0], functionValues[0]) ? castToUInt8(currFuncInstanceDTypes[1], functionValues[1]) : value;
+            *(int64_t*)value = castToUInt8(currFuncInstanceDTypes[0], functionValues[0]) ? castToUInt8(currFuncInstanceDTypes[1], functionValues[1]) : *(int64_t*)value;
             return 1;
             break;
             
         case DBDataSchema::DT_REAL4:
-            *(float*)value = castToFloat(currFuncInstanceDTypes[0], functionValues[0]) ? castToFloat(currFuncInstanceDTypes[1], functionValues[1]) : value;
+            *(float*)value = castToFloat(currFuncInstanceDTypes[0], functionValues[0]) ? castToFloat(currFuncInstanceDTypes[1], functionValues[1]) : *(float*)value;
             return 1;
             break;
             
         case DBDataSchema::DT_REAL8:
-            *(double*)value = castToDouble(currFuncInstanceDTypes[0], functionValues[0]) ? castToDouble(currFuncInstanceDTypes[1], functionValues[1]) : value;
+            *(double*)value = castToDouble(currFuncInstanceDTypes[0], functionValues[0]) ? castToDouble(currFuncInstanceDTypes[1], functionValues[1]) : *(double*)value;
             return 1;
             break;
 
