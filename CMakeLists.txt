@@ -36,6 +36,8 @@ endif()
 file(GLOB FILES_SRC "${DIDIR}/*.h" "${DIDIR}/*.cpp" "${DIDIR}/Asserters/*.h" "${DIDIR}/Asserters/*.cpp" "${DIDIR}/Converters/*.h" "${DIDIR}/Converters/*.cpp" "${AIDIR}/*.h" "${AIDIR}/*.cpp")
 file(GLOB HEADERS "${DIDIR}/*.h")
 
+set(FILES_SRC ${FILES_SRC} "${DIDIR}/DBAdaptors/DBCSV.cpp" "${DIDIR}/DBAdaptors/DBCSV.h")
+
 #MESSAGE(STATUS "Dir: " ${DIDIR})
 
 SET(Boost_USE_MULTITHREAD ON)

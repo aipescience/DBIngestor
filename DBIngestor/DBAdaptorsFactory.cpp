@@ -1,5 +1,5 @@
 /*  
- *  Copyright (c) 2012, Adrian M. Partl <apartl@aip.de>, 
+ *  Copyright (c) 2012 - 2014, Adrian M. Partl <apartl@aip.de>, 
  *                      eScience team AIP Potsdam
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,17 +27,19 @@
 // your custom Converter goes here:
 ////////////////////////////////////////////////////
 #ifdef DB_SQLITE3
-#include "../../DBIngestor/DBIngestor/DBAdaptors/DBSqlite3.h"
+#include "DBAdaptors/DBSqlite3.h"
 #endif
 
 #ifdef DB_MYSQL
-#include "../../DBIngestor/DBIngestor/DBAdaptors/DBMySQL.h"
+#include "DBAdaptors/DBMySQL.h"
 #endif
 
 #ifdef DB_ODBC
-#include "../../DBIngestor/DBIngestor/DBAdaptors/DBODBC.h"
-#include "../../DBIngestor/DBIngestor/DBAdaptors/DBODBCBulk.h"
+#include "DBAdaptors/DBODBC.h"
+#include "DBAdaptors/DBODBCBulk.h"
 #endif
+
+#include "DBAdaptors/DBCSV.h"
 
 using namespace DBServer;
 using namespace std;
@@ -96,6 +98,12 @@ DBAbstractor * DBAdaptorsFactory::getDBAdaptors(string name) {
         dbServer = new DBServer::DBODBCBulk();
     }
 #endif    
+
+    if (name.compare("csv") == 0) {
+        //TESTS ON SQL SERVER SHOWED THIS IS VERY SLOW. BUT NO CLUE WHY, DID NOT BOTHER TO LOOK AT PROFILER YET
+        found = 1;
+        dbServer = new DBServer::DBCSV();
+    }
 
     if (found == 0 || dbServer == NULL) {
         printf("Error: Sorry the database %s is not yet supported. To add support, implement the DBAbstractor class accordingly\n", name.c_str());

@@ -30,8 +30,8 @@
 #include "Converter.h"
 #include "DType.h"
 
-#ifndef DBIngestor_convert_isle_h
-#define DBIngestor_convert_isle_h
+#ifndef DBIngestor_convert_ifthen_h
+#define DBIngestor_convert_ifthen_h
 
 namespace DBConverter {
     /*! \class convert_ispositive
@@ -39,14 +39,14 @@ namespace DBConverter {
      
      Implementation of ispositive check
      */
-	class convert_isle : public Converter {
+	class convert_ifthen : public Converter {
         
 	private:
 
 	public:
-        convert_isle();
+        convert_ifthen();
         
-        ~convert_isle();
+        ~convert_ifthen();
         
         Converter * clone();
         

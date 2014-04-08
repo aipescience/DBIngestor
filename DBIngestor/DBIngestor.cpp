@@ -1,5 +1,5 @@
 /*  
- *  Copyright (c) 2012, Adrian M. Partl <apartl@aip.de>, 
+ *  Copyright (c) 2012 - 2014, Adrian M. Partl <apartl@aip.de>, 
  *                      eScience team AIP Potsdam
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -68,6 +68,12 @@ int DBIngestor::validateSchema() {
     //TODO: Make this check more extensive! Check for isnull and stuff... i.e. search for missing data
     assert(myDBAbstractor != NULL);
     assert(myDBSchema != NULL);
+
+    //check if this database adapter supports schema retrieval, if not, we will purely rely on what has been
+    //provided by the user and this function will return true
+    if(myDBAbstractor->getSupportsSchemaRetrieval() == false) {
+        return 1;
+    }
     
     //get schema from server
     DBDataSchema::Schema * srvSchema = myDBAbstractor->getSchema(myDBSchema->getDbName(), myDBSchema->getTableName());

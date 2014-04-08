@@ -1,5 +1,5 @@
 /*  
- *  Copyright (c) 2012 - 2014, Adrian M. Partl <apartl@aip.de>, 
+ *  Copyright (c) 2012 - 2014 Adrian M. Partl <apartl@aip.de>, 
  *                      eScience team AIP Potsdam
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,48 +18,54 @@
  */
 
 
-/*! \file DBSqlite3.h
- \brief Implementation of DBAbstractor for SQLite3
+/*! \file DBCSV.h
+ \brief Implementation of DBAbstractor for CSV files (mainly for debuging)
  
- This provides an implementation of DBAbstractor for SQLite3.
+ This provides an implementation of DBAbstractor for CSV files (mainly for debuging).
  */
 
 #include "DBAbstractor.h"
-#include <sqlite3.h>
 
-#ifndef DBIngestor_DBSqlite3_h
-#define DBIngestor_DBSqlite3_h
+#ifdef _WIN32
+#include <winsock.h>
+#endif
+
+#include <stdio.h>
+
+#ifndef DBIngestor_DBCSV_h
+#define DBIngestor_DBCSV_h
 
 namespace DBServer {
     
-    /*! \class DBSqlite3
-     \brief DBSqlite3 communication class
+    /*! \class DBCSV
+     \brief DBCSV communication class
      
      This class implements all the DBAbstractor methods needed for communicating
-     with an SQLite3 database.
+     with an MySQL database.
      */
-    class DBSqlite3 : public DBAbstractor {
+    class DBCSV : public DBAbstractor {
     private:
-        /*! \var sqlite3 * dbHandler
-         a pointer to the sqlite3 db handler
+        /*! \var FILE * fileHanlder
+         a pointer to the CSV file hanlder
          */
-        sqlite3 * dbHandler;
-
-    public:
-        DBSqlite3();
+        FILE * fileHandler;
+		std::string fileName;
+        DBDataSchema::Schema * mySchema;
+        bool wroteHeader;
         
-        ~DBSqlite3();        
+    public:
+        DBCSV();
+        
+        ~DBCSV();        
         
         /*! \brief connects to a database server. 
          \param string usr: username with which to connect to the DB server
          \param string pwd: password for the given user
          \param string host: host or ip address to the database server
          \param string port: port of the database server
-         \param string port: socket of the database server
          
          \return returns 1 if successfull or 0 if not
          
-         Place path to file in port! Remaining options are ignored...
          Opens a connection to a database server at the given host and port, using the given username
          and password. If the connection was sucessfully established, this shall return 1, otherwise 0.*/
 		virtual int connect(std::string usr, std::string pwd, std::string host, std::string port, std::string socket);
@@ -103,7 +109,7 @@ namespace DBServer {
          
          \return returns 1 if successfull or 0 if not
          
-         THIS FUNCTION IS NOT SUPPORTED BY SQLITE3: Calling this function will disable (not delete!) all the keys/indexes on a given table.*/
+         Calling this function will disable (not delete!) all the keys/indexes on a given table.*/
         virtual int disableKeys(DBDataSchema::Schema * thisSchema);
         
         /*! \brief reenables the keys of a given table. 
@@ -111,7 +117,7 @@ namespace DBServer {
          
          \return returns 1 if successfull or 0 if not
          
-         THIS FUNCTION IS NOT SUPPORTED BY SQLITE3: Calling this function will reenable all the keys/indexes on a given table.*/
+         Calling this function will reenable all the keys/indexes on a given table.*/
         virtual int enableKeys(DBDataSchema::Schema * thisSchema);
 
         /*! \brief retrieves a Schema object from a given database table. 
@@ -168,7 +174,7 @@ namespace DBServer {
          then cast according to the Schema. The length of the void pointer array has the same size as Schema and needs 
          to be of equal ordering!*/
         virtual int insertOneRow(DBDataSchema::Schema * thisSchema, void** thisData, void* preparedStatement);
-
+        
         /*! \brief binds a given row to a prepared statement (works as well for multi statements).  
          \param DBDataSchema::Schema * thisSchema: a valid Schema where the data should be inserted
          \param void** thisData: A pointer array to the data with length len(Schema) and the same ordering as in Schema.
@@ -179,9 +185,7 @@ namespace DBServer {
          
          Inserts one row into a given Schema into the nInStmt-th row using a prepared statement. The data is stored in a 
          void pointer array and is then cast according to the Schema. The length of the void pointer array has the same 
-         size as Schema and needs to be of equal ordering. Since everything is DBT_ANY, this version reads the data 
-         type from the DataObject and binds this to the statement. The Ingest Buffer holds per variable an element of 
-         size void* which needs to be enougth to hold the data or the pointer to the string...!*/
+         size as Schema and needs to be of equal ordering!*/
         virtual int bindOneRowToStmt(DBDataSchema::Schema * thisSchema, void* thisData, void* preparedStatement, int nInStmt);
         
         /*! \brief binds a given row to a prepared statement (works as well for multi statements).  
@@ -217,9 +221,20 @@ namespace DBServer {
         /*! \brief return maximum number of rows possible per prepared statement  
          \param DBDataSchema::Schema * thisSchema: a valid Schema which is needed, if the number of possible rows needs to be determined from the number of elements in thisSchema
          
-         \return returns number of possible rows per prepared statement. SQLITE3 does not need the Schema to be defined. Here you can pass NULL if you want.*/
+         \return returns number of possible rows per prepared statement*/
         virtual int maxRowsPerStmt(DBDataSchema::Schema * thisSchema);
 
+        /*! \brief retrievs (initiates retrieval) the complete specified table
+         \param DBDataSchema::Schema * thisSchema: a valid Schema which directly corresponds to the table contents (ALL ROWS!)
+         
+         \return returns an initialised prepared statement for this query*/
+        virtual void * initGetCompleteTable(DBDataSchema::Schema * thisSchema);
+
+        /*! \brief move cursor to next row
+         \param void* preparedStatement: a pointer to a prepared statement object that holds the result of this query
+         
+         \return returns 1 if successfull, 0 if end of table is reached*/
+        virtual int getNextRow(DBDataSchema::Schema * thisSchema, void* thisData, void * preparedStatement);
     };
 }
 #endif

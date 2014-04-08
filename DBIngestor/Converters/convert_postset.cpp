@@ -1,5 +1,5 @@
 /*  
- *  Copyright (c) 2012, Adrian M. Partl <apartl@aip.de>, 
+ *  Copyright (c) 2012 - 2014, Adrian M. Partl <apartl@aip.de>, 
  *			            Kristin Riebe <kriebe@aip.de>
  *                      eScience team AIP Potsdam
  *
@@ -58,9 +58,10 @@ bool convert_postset::execute(DBDataSchema::DType thisDType, void* value) {
 
     assert(value != NULL);
     
+    char * buffer1 = NULL;
     switch (thisDType) {
-        case DBDataSchema::DT_STRING:
-            char * buffer1 = castToString(currFuncInstanceDTypes[0], functionValues[0]);
+        case DBDataSchema::DT_STRING: 
+            buffer1 = castToString(currFuncInstanceDTypes[0], functionValues[0]);
 
             if(valueCopy != NULL) {
                 *(char**)value = *(char**)valueCopy;
@@ -80,7 +81,7 @@ bool convert_postset::execute(DBDataSchema::DType thisDType, void* value) {
                 *(int8_t*)value = *(int8_t*)valueCopy;
             } else {
                 *(int8_t*)value = castToInt1(currFuncInstanceDTypes[0], functionValues[0]);
-                *(int8_t*)valueCopy = (int8_t*)malloc(sizeof(int8_t));
+                valueCopy = (void*)malloc(sizeof(int8_t));
             }
             
             *(int8_t*)valueCopy = castToInt1(currFuncInstanceDTypes[0], functionValues[0]);
@@ -92,7 +93,7 @@ bool convert_postset::execute(DBDataSchema::DType thisDType, void* value) {
                 *(int16_t*)value = *(int16_t*)valueCopy;
             } else {
                 *(int16_t*)value = castToInt2(currFuncInstanceDTypes[0], functionValues[0]);
-                *(int16_t*)valueCopy = (int16_t*)malloc(sizeof(int16_t));
+                valueCopy = (void*)malloc(sizeof(int16_t));
             }
             
             *(int16_t*)valueCopy = castToInt2(currFuncInstanceDTypes[0], functionValues[0]);
@@ -104,7 +105,7 @@ bool convert_postset::execute(DBDataSchema::DType thisDType, void* value) {
                 *(int32_t*)value = *(int32_t*)valueCopy;
             } else {
                 *(int32_t*)value = castToInt4(currFuncInstanceDTypes[0], functionValues[0]);
-                *(int32_t*)valueCopy = (int32_t*)malloc(sizeof(int32_t));
+                valueCopy = (void*)malloc(sizeof(int32_t));
             }
             
             *(int32_t*)valueCopy = castToInt4(currFuncInstanceDTypes[0], functionValues[0]);
@@ -116,7 +117,7 @@ bool convert_postset::execute(DBDataSchema::DType thisDType, void* value) {
                 *(int64_t*)value = *(int64_t*)valueCopy;
             } else {
                 *(int64_t*)value = castToInt8(currFuncInstanceDTypes[0], functionValues[0]);
-                *(int64_t*)valueCopy = (int64_t*)malloc(sizeof(int64_t));
+                valueCopy = (void*)malloc(sizeof(int64_t));
             }
             
             *(int64_t*)valueCopy = castToInt8(currFuncInstanceDTypes[0], functionValues[0]);
@@ -128,7 +129,7 @@ bool convert_postset::execute(DBDataSchema::DType thisDType, void* value) {
                 *(int8_t*)value = *(int8_t*)valueCopy;
             } else {
                 *(int8_t*)value = castToUInt1(currFuncInstanceDTypes[0], functionValues[0]);
-                *(int8_t*)valueCopy = (int8_t*)malloc(sizeof(int8_t));
+                valueCopy = (void*)malloc(sizeof(int8_t));
             }
             
             *(int8_t*)valueCopy = castToUInt1(currFuncInstanceDTypes[0], functionValues[0]);
@@ -140,7 +141,7 @@ bool convert_postset::execute(DBDataSchema::DType thisDType, void* value) {
                 *(int16_t*)value = *(int16_t*)valueCopy;
             } else {
                 *(int16_t*)value = castToUInt2(currFuncInstanceDTypes[0], functionValues[0]);
-                *(int16_t*)valueCopy = (int16_t*)malloc(sizeof(int16_t));
+                valueCopy = (void*)malloc(sizeof(int16_t));
             }
             
             *(int16_t*)valueCopy = castToUInt2(currFuncInstanceDTypes[0], functionValues[0]);
@@ -152,7 +153,7 @@ bool convert_postset::execute(DBDataSchema::DType thisDType, void* value) {
                 *(int32_t*)value = *(int32_t*)valueCopy;
             } else {
                 *(int32_t*)value = castToUInt4(currFuncInstanceDTypes[0], functionValues[0]);
-                *(int32_t*)valueCopy = (int32_t*)malloc(sizeof(int32_t));
+                valueCopy = (void*)malloc(sizeof(int32_t));
             }
             
             *(int32_t*)valueCopy = castToUInt4(currFuncInstanceDTypes[0], functionValues[0]);
@@ -164,7 +165,7 @@ bool convert_postset::execute(DBDataSchema::DType thisDType, void* value) {
                 *(int64_t*)value = *(int64_t*)valueCopy;
             } else {
                 *(int64_t*)value = castToUInt8(currFuncInstanceDTypes[0], functionValues[0]);
-                *(int64_t*)valueCopy = (int64_t*)malloc(sizeof(int64_t));
+                valueCopy = (void*)malloc(sizeof(int64_t));
             }
             
             *(int64_t*)valueCopy = castToUInt8(currFuncInstanceDTypes[0], functionValues[0]);
@@ -176,7 +177,7 @@ bool convert_postset::execute(DBDataSchema::DType thisDType, void* value) {
                 *(float*)value = *(float*)valueCopy;
             } else {
                 *(float*)value = castToFloat(currFuncInstanceDTypes[0], functionValues[0]);
-                *(float*)valueCopy = (float*)malloc(sizeof(float));
+                valueCopy = (void*)malloc(sizeof(float));
             }
             
             *(float*)valueCopy = castToFloat(currFuncInstanceDTypes[0], functionValues[0]);
@@ -188,7 +189,7 @@ bool convert_postset::execute(DBDataSchema::DType thisDType, void* value) {
                 *(double*)value = *(double*)valueCopy;
             } else {
                 *(double*)value = castToDouble(currFuncInstanceDTypes[0], functionValues[0]);
-                *(double*)valueCopy = (double*)malloc(sizeof(double));
+                valueCopy = (void*)malloc(sizeof(double));
             }
             
             *(double*)valueCopy = castToDouble(currFuncInstanceDTypes[0], functionValues[0]);

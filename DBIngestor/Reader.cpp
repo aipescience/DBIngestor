@@ -1,5 +1,5 @@
 /*  
- *  Copyright (c) 2012, Adrian M. Partl <apartl@aip.de>, 
+ *  Copyright (c) 2012 - 2014, Adrian M. Partl <apartl@aip.de>, 
  *                      eScience team AIP Potsdam
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -92,7 +92,13 @@ bool Reader::applyConversions(DBDataSchema::DataObjDesc * thisItem, void* result
 
     //checking this assertion only once per row, is it alreads evaluated?
     if(thisItem->getConversionEvaluated() == true) {
-        return;
+        //set the result to the last converter in this data object, since this would be the
+        //value that gets returned
+        int i = thisItem->getNumConverters();
+
+        if(i == 0 || thisItem->getConversion(i - 1)->getResult(thisItem->getDataObjDType(), result) == 1) {
+            return false;
+        }
     }
     
     for(int i=0; i<thisItem->getNumConverters(); i++) {
@@ -108,7 +114,7 @@ bool Reader::applyConversions(DBDataSchema::DataObjDesc * thisItem, void* result
         }
         
         err = currConverter->execute(thisItem->getDataObjDType(), result);
-        
+
         if(err == 0) {
             printf("Error in Conversion\n");
             printf("Conversion Number: %i\n", i);
@@ -120,6 +126,9 @@ bool Reader::applyConversions(DBDataSchema::DataObjDesc * thisItem, void* result
         if(err == -1) {
             return true;
         }
+
+        //save the result for easy retrieval later
+        currConverter->setResult(thisItem->getDataObjDType(), result);
     }
 
     thisItem->setConversionEvaluated(true);

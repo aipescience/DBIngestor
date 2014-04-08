@@ -1,5 +1,5 @@
 /*  
- *  Copyright (c) 2012, Adrian M. Partl <apartl@aip.de>, 
+ *  Copyright (c) 2012 - 2014, Adrian M. Partl <apartl@aip.de>, 
  *                      eScience team AIP Potsdam
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,6 +39,7 @@
 #include "Converters/convert_isLt.h"
 #include "Converters/convert_isNe.h"
 #include "Converters/convert_ifthenelse.h"
+#include "Converters/convert_ifthen.h"
 #include "Converters/convert_concat.h"
 #include "Converters/convert_3concat.h"
 #include "Converters/convert_sqrt.h"
@@ -64,6 +65,7 @@ ConverterFactory::ConverterFactory() {
     registerConvert<convert_islt>();
     registerConvert<convert_isne>();
     registerConvert<convert_ifthenelse>();
+    registerConvert<convert_ifthen>();
     registerConvert<convert_concat>();
     registerConvert<convert_3concat>();
     registerConvert<convert_sqrt>();

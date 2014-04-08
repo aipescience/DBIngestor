@@ -1,5 +1,5 @@
 /*  
- *  Copyright (c) 2012, Adrian M. Partl <apartl@aip.de>, 
+ *  Copyright (c) 2012 - 2014, Adrian M. Partl <apartl@aip.de>, 
  *                      eScience team AIP Potsdam
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,10 +29,14 @@ using namespace std;
 #define CONV_RESULT_BUFFER_SIZE 128
 
 Converter::Converter() {
-
+    result = NULL;
 }
 
 Converter::~Converter() {
+    if(result != NULL) {
+        free(result);
+    }
+
     //deallocate function parameter array
     for(int i=0; i<functionParamArray.size(); i++) {
         free(functionParamArray.at(i).validTypeArray);
@@ -162,6 +166,116 @@ void* Converter::getParameter(int parNum) {
     assert(parNum < functionValues.size());
     
     return functionValues.at(parNum);
+}
+
+int Converter::setResult(DBDataSchema::DType thisDType, void* value) {
+    assert(value != NULL);
+
+    if(result != NULL) {
+        free(result);
+    }
+
+    switch (thisDType) {
+        case DBDataSchema::DT_STRING:
+            result = malloc(strlen(*(char**)value) + 1);
+            strcpy(*(char**)result, *(char**)value);
+            break;
+        case DBDataSchema::DT_INT1:
+            result = malloc(sizeof(int8_t));
+            *(int8_t*)result = *(int8_t*)value;
+            break;
+        case DBDataSchema::DT_INT2:
+            result = malloc(sizeof(int16_t));
+            *(int16_t*)result = *(int16_t*)value;
+            break;
+        case DBDataSchema::DT_INT4:
+            result = malloc(sizeof(int32_t));
+            *(int32_t*)result = *(int32_t*)value;
+            break;
+        case DBDataSchema::DT_INT8:
+            result = malloc(sizeof(int64_t));
+            *(int64_t*)result = *(int64_t*)value;
+            break;
+        case DBDataSchema::DT_UINT1:
+            result = malloc(sizeof(int8_t));
+            *(int8_t*)result = *(int8_t*)value;
+            break;
+        case DBDataSchema::DT_UINT2:
+            result = malloc(sizeof(int16_t));
+            *(int16_t*)result = *(int16_t*)value;
+            break;
+        case DBDataSchema::DT_UINT4:
+            result = malloc(sizeof(int32_t));
+            *(int32_t*)result = *(int32_t*)value;
+            break;
+        case DBDataSchema::DT_UINT8:
+            result = malloc(sizeof(int64_t));
+            *(int64_t*)result = *(int64_t*)value;
+            break;
+        case DBDataSchema::DT_REAL4:
+            result = malloc(sizeof(float));
+            *(float*)result = *(float*)value;
+            break;
+        case DBDataSchema::DT_REAL8:
+            result = malloc(sizeof(double));
+            *(double*)result = *(double*)value;
+            break;
+        default:
+            DBIngestor_error("Converter Error: Cannot save the result due to unknown format type\n", NULL);
+            break;
+    }    
+    
+    return 1;
+}
+
+int Converter::getResult(DBDataSchema::DType thisDType, void* value) {
+    assert(value != NULL);
+
+    if(result == NULL) {
+        return 0;
+    }
+
+    switch (thisDType) {
+        case DBDataSchema::DT_STRING:
+            value = malloc(strlen(*(char**)result) + 1);
+            strcpy(*(char**)value, *(char**)result);
+            break;
+        case DBDataSchema::DT_INT1:
+            *(int8_t*)value = *(int8_t*)result;
+            break;
+        case DBDataSchema::DT_INT2:
+            *(int16_t*)value = *(int16_t*)result;
+            break;
+        case DBDataSchema::DT_INT4:
+            *(int32_t*)value = *(int32_t*)result;
+            break;
+        case DBDataSchema::DT_INT8:
+            *(int64_t*)value = *(int64_t*)result;
+            break;
+        case DBDataSchema::DT_UINT1:
+            *(int8_t*)value = *(int8_t*)result;
+            break;
+        case DBDataSchema::DT_UINT2:
+            *(int16_t*)value = *(int16_t*)result;
+            break;
+        case DBDataSchema::DT_UINT4:
+            *(int32_t*)value = *(int32_t*)result;
+            break;
+        case DBDataSchema::DT_UINT8:
+            *(int64_t*)value = *(int64_t*)result;
+            break;
+        case DBDataSchema::DT_REAL4:
+            *(float*)value = *(float*)result;
+            break;
+        case DBDataSchema::DT_REAL8:
+            *(double*)value = *(double*)result;
+            break;
+        default:
+            DBIngestor_error("Converter Error: Cannot return the result due to unknown format type\n", NULL);
+            break;
+    }    
+
+    return 1;
 }
 
 bool Converter::execute(DBDataSchema::DType thisDType, void* value) {

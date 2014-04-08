@@ -1,5 +1,5 @@
 /*  
- *  Copyright (c) 2012, Adrian M. Partl <apartl@aip.de>, 
+ *  Copyright (c) 2012 - 2014, Adrian M. Partl <apartl@aip.de>, 
  *                      eScience team AIP Potsdam
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -72,6 +72,11 @@ namespace DBConverter {
          holds the data objects that link to the apropriate data
          */
         std::vector<DBDataSchema::DataObjDesc*> dataObjArray;
+
+        /*! \var void * result
+         holds the result of the evaluation to be returned on second evaluation per row
+         */
+        void * result;
 
         /*! \brief registers the type of parNum-th parameter for a specific instance of this converter
          \param int parNum: the number of the parameter to set
@@ -149,6 +154,23 @@ namespace DBConverter {
          implemented by the converter implementer.*/
 		void* getParameter(int parNum);
 	
+        /*! \brief sets the result value of this converter
+         \param DBDataSchema::DType thisDType: dtype of the result value
+         \param void* value: value to set
+         \return 1 if ok, 0 if not
+         
+         Sets the result value of this converter. This can be used to only evaluate a conversion once per row
+         and saves the output.*/
+        int setResult(DBDataSchema::DType thisDType, void* value);
+    
+        /*! \brief gets the result value of this converter
+         \param DBDataSchema::DType thisDType: dtype of the result value
+         \param void* value: pointer to where the result will get written into
+         \return 1 if ok, 0 if not
+         
+         Copies the result into the address given by value.*/
+        int getResult(DBDataSchema::DType thisDType, void* value);
+
         /*! \brief retrieves the number of parameters this converter has
          \return number of parameters in this converter
          

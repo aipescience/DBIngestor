@@ -1,5 +1,5 @@
 /*  
- *  Copyright (c) 2012, Adrian M. Partl <apartl@aip.de>, 
+ *  Copyright (c) 2012 - 2014, Adrian M. Partl <apartl@aip.de>, 
  *			            Kristin Riebe <kriebe@aip.de>
  *                      eScience team AIP Potsdam
  *
@@ -54,10 +54,12 @@ bool convert_set::execute(DBDataSchema::DType thisDType, void* value) {
     assert(value != NULL);
     
     //apply set to the function value
+    char * buffer1 = NULL;
+    char * returnBuffer = NULL;
     switch (thisDType) {
         case DBDataSchema::DT_STRING:
-            char * buffer1 = castToString(currFuncInstanceDTypes[0], functionValues[0]);
-            char * returnBuffer = (char*) malloc(sizeof(buffer1) + 1);
+            buffer1 = castToString(currFuncInstanceDTypes[0], functionValues[0]);
+            returnBuffer = (char*) malloc(sizeof(buffer1) + 1);
             if(returnBuffer == NULL)
                 DBIngestor_error("Converter Error: Could not allocate memory in CONV_SET\n", NULL);
 

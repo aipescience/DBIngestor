@@ -1,5 +1,5 @@
 /*  
- *  Copyright (c) 2012, Adrian M. Partl <apartl@aip.de>, 
+ *  Copyright (c) 2012 - 2014, Adrian M. Partl <apartl@aip.de>, 
  *                      eScience team AIP Potsdam
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,6 +44,7 @@ namespace DBServer {
 	class DBAbstractor {
     
     protected:
+        bool supportsSchemaRetrieval;
         bool isConnected;
         bool resumeMode;
 
@@ -236,6 +237,8 @@ namespace DBServer {
         bool getResumeMode();
 
         void setResumeMode(bool newResumeMode);
+
+        bool getSupportsSchemaRetrieval();
     };
 }
 

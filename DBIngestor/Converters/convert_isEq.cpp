@@ -1,5 +1,5 @@
 /*  
- *  Copyright (c) 2012, Adrian M. Partl <apartl@aip.de>, 
+ *  Copyright (c) 2012 - 2014, Adrian M. Partl <apartl@aip.de>, 
  *                      eScience team AIP Potsdam
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
  *  limitations under the License.
  */
 
+#include <stdlib.h>
 #include "dbingestor_error.h"
 #include <assert.h>
 #include "convert_isEq.h"
@@ -52,11 +53,14 @@ bool convert_iseq::execute(DBDataSchema::DType thisDType, void* value) {
     assert(value != NULL);
     
 	//apply iseq to the value
+    char * buffer1 = NULL;
+    char * buffer2 = NULL;
+    char * returnBuffer = NULL;
     switch (thisDType) {
         case DBDataSchema::DT_STRING:
-            char * buffer1 = castToString(currFuncInstanceDTypes[0], functionValues[0]);
-            char * buffer2 = castToString(currFuncInstanceDTypes[1], functionValues[1]);
-            char * returnBuffer = (char*) malloc(1 + 1);
+            buffer1 = castToString(currFuncInstanceDTypes[0], functionValues[0]);
+            buffer2 = castToString(currFuncInstanceDTypes[1], functionValues[1]);
+            returnBuffer = (char*) malloc(1 + 1);
             if(returnBuffer == NULL)
                 DBIngestor_error("Converter Error: Could not allocate memory in CONV_ISEQ\n", NULL);
 
