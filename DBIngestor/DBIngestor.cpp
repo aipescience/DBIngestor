@@ -240,6 +240,7 @@ int DBIngestor::ingestData(int lenBuffer) {
         if(performanceMeter != -1 && counter % performanceMeter == 0) {
             endTime = boost::posix_time::microsec_clock::universal_time();
             printf("Time took to ingest %lld (current %lld) rows: %lld ms\n", performanceMeter, counter, (endTime-startTime).total_milliseconds());
+            fflush(stdout);
             startTime = boost::posix_time::microsec_clock::universal_time();
         }
     }
@@ -251,6 +252,7 @@ int DBIngestor::ingestData(int lenBuffer) {
     if(performanceMeter != -1) {
         endTime = boost::posix_time::microsec_clock::universal_time();
         printf("Time took to ingest %lld (current %lld) rows: %lld ms\n", performanceMeter, counter, (endTime-startTime).total_milliseconds());
+        fflush(stdout);
         startTime = boost::posix_time::microsec_clock::universal_time();
     }
 

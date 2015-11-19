@@ -32,7 +32,7 @@ SchemaItem::SchemaItem() {
 
 SchemaItem::~SchemaItem() {
     if(dataDesc != NULL)
-        delete dataDesc;    
+        delete dataDesc;
 }
 
 string SchemaItem::getColumnName() {

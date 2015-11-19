@@ -44,7 +44,7 @@
 #include "Converters/convert_3concat.h"
 #include "Converters/convert_sqrt.h"
 #include "Converters/convert_power.h"
-#include "Converters/convert_periodicBound.h"
+#include "Converters/convert_periodicShift.h"
 #include "Converters/convert_set.h"
 #include "Converters/convert_postset.h"
 
@@ -70,7 +70,7 @@ ConverterFactory::ConverterFactory() {
     registerConvert<convert_3concat>();
     registerConvert<convert_sqrt>();
     registerConvert<convert_power>();
-    registerConvert<convert_periodicbound>();
+    registerConvert<convert_periodicshift>();
     registerConvert<convert_set>();
     registerConvert<convert_postset>();
 }
