@@ -37,6 +37,7 @@ DBIngestor::DBIngestor() {
     enableKeys = 0;
     askUserToValidateRead = 1;
     resumeMode = false;
+    isDryRun = false;
     myDBAbstractor = NULL;
     myDBSchema = NULL;
     myReader = NULL;
@@ -57,6 +58,8 @@ DBIngestor::DBIngestor(DBDataSchema::Schema * newSchema, DBReader::Reader * newR
     myDBSchema = NULL;
     myReader = NULL;
     askUserToValidateRead = 1;
+    resumeMode = false;
+    isDryRun = false;
     
     setSchema(newSchema);
     setReader(newReader);
